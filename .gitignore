@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+*.egg-info/
+*.eggs/
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs et outputs
+*.log
+training_output.log
+
+# Environment
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Donnees brutes (volumineuses, regenerables)
+data/raw/
+data/processed/
+
+# Fichiers intermediaires du pipeline (regeneres par run_pipeline.py --force)
+data/fine_tuning/training_data_enriched_varied.jsonl
+data/fine_tuning/training_data_cleaned.jsonl
+data/fine_tuning/training_data_merged.jsonl
+
+# NOTE : data/fine_tuning/training_data_final_12gb.jsonl est TRACKE
+#        Corpus canonique (4 792 paires) utilise pour les adapters.
+
+# Modeles (trop volumineux pour git)
+models/adapters/
+models/*.bin
+models/*.safetensors
+*.safetensors
+*.gguf
+code/data/
+*.xml
+
+# Fichiers temporaires
+STRATEGIE_*.md
+temp_*.py
+test_*.txt
+
+# Results - logs d'entrainement
+results/logs/*.jsonl
+results/logs/*.json
