@@ -1,0 +1,39 @@
+{
+  "pipeline_version": "1.0",
+  "generated_at": "2026-03-04T00:56:32.429955",
+  "target_tokens": 550000,
+  "corpus_stats": {
+    "total_pairs": 5575,
+    "total_tokens_estimated": 539479,
+    "token_utilization": "98.1%",
+    "avg_prompt_length_chars": 88,
+    "avg_completion_length_chars": 300,
+    "guardrails_pairs": 0,
+    "departments_covered": [],
+    "num_departments": 0
+  },
+  "split_suggestion": {
+    "train": 4894,
+    "reserved_test": 681,
+    "note": "Le train set sera re-splitté en 80/10/10 (train/val/test) dans train_optimized.py"
+  },
+  "sources": {
+    "DECP_PROCEDURE": 2709,
+    "ELUS_CONSEILLERS": 500,
+    "PROCEDURAL_SEUILS": 1616,
+    "ELUS_MAIRE": 500,
+    "COMPARATIVE_DEPTS": 36,
+    "ELUS_COMMUNE": 191,
+    "OUT_OF_SCOPE_GEO": 7,
+    "OUT_OF_SCOPE_ELUS": 7,
+    "OUT_OF_SCOPE_TEMPORAL": 5,
+    "OUT_OF_SCOPE_DOMAIN": 4
+  },
+  "reduction": {
+    "before_pairs": 5575,
+    "after_pairs": 5575,
+    "reduction_percent": 0.0
+  },
+  "sha256_hash": "3f3916711dafe81937faa600f0391fd94bd6762d26ca2ddffbc8ddec89dc58fc",
+  "seed": 42
+}
