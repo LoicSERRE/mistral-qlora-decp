@@ -1,0 +1,27 @@
+# Fine-Tuning Requirements - Mistral 7B LoRA
+# Python 3.10+
+
+# Core ML
+torch
+transformers
+datasets
+
+# LoRA / PEFT
+peft
+
+# Optimization
+accelerate
+bitsandbytes
+
+# Tokenizer dependencies
+sentencepiece
+protobuf
+
+
+numpy
+pandas
+tqdm
+
+# Optional (monitoring)
+# tensorboard
+# wandb
