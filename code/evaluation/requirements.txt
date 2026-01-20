@@ -1,0 +1,17 @@
+# Évaluation Requirements
+# Python 3.10+
+
+# Core (déjà installés si fine-tuning fait)
+torch>=2.0.0
+transformers>=4.35.0
+peft>=0.7.0
+datasets>=2.14.0
+
+# Métriques & Visualisation
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Utils
+numpy>=1.24.0
+pandas>=2.0.0
+tqdm>=4.65.0
