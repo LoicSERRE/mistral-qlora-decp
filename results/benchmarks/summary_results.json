@@ -1,0 +1,16 @@
+{
+  "base": {
+    "perplexity": 11.01,
+    "loss": 2.3984,
+    "factual_accuracy": 0.0,
+    "guardrails": 100.0,
+    "tokens_per_sec": 19.6
+  },
+  "finetuned": {
+    "perplexity": 1.37,
+    "loss": 0.3155,
+    "factual_accuracy": 83.3,
+    "guardrails": 100.0,
+    "tokens_per_sec": 10.4
+  }
+}

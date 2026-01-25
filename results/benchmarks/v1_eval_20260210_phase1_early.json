@@ -1,0 +1,18 @@
+{
+  "base": {
+    "perplexity": 10.744300048900506,
+    "loss": 2.374375385943836,
+    "factual_accuracy": 0.0,
+    "guardrails": 100.0,
+    "tokens_per_sec": 2.8268354008812318,
+    "avg_time": 35.37524681091308
+  },
+  "finetuned": {
+    "perplexity": 1.1955844506712536,
+    "loss": 0.1786351458824296,
+    "factual_accuracy": 50.0,
+    "guardrails": 100.0,
+    "tokens_per_sec": 4.05630430885623,
+    "avg_time": 24.652982711791992
+  }
+}
