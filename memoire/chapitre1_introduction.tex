@@ -1,0 +1,187 @@
+% CHAPITRE 1 : INTRODUCTION
+
+\chapter{Introduction}
+
+\section{Contexte et problématique}
+
+L'ouverture des données publiques, rendue obligatoire en France par la loi pour une République numérique (2016), a généré un volume important de ressources informationnelles accessibles aux citoyens. Cependant, l'exploitation effective de ces données reste limitée par des barrières techniques et cognitives. Une mission réalisée chez Sopra Steria a permis d'observer directement cette fracture : les citoyens disposent théoriquement d'un accès libre aux données, mais manquent d'outils adaptés pour les interpréter et les exploiter.
+
+Les LLM généralistes (ChatGPT, Claude) présentent quatre limitations critiques dans ce contexte : données obsolètes (coupure temporelle), absence de contextualisation territoriale française (méconnaissance des structures administratives : EPCI, communes déléguées, compétences intercommunales), manque de spécialisation au vocabulaire administratif français, et limitation aux réponses textuelles.
+
+Face à ces constats, la problématique centrale de ce mémoire s'énonce ainsi :
+
+\begin{quote}
+\textit{Comment créer un système d'intelligence artificielle spécialisé dans les données publiques territoriales qui dépasse les limitations des LLM généralistes pour favoriser concrètement l'engagement citoyen ?}
+\end{quote}
+
+Cette problématique soulève plusieurs questions :
+
+\begin{itemize}
+    \item Quels critères permettent de sélectionner le modèle optimal avec des ressources matérielles limitées ?
+    \item Comment adapter un modèle généraliste aux données publiques françaises ?
+    \item Comment évaluer et démontrer l'apport d'une approche spécialisée par rapport aux solutions généralistes ?
+    \item Comment garantir l'explicabilité et la traçabilité des réponses ?
+\end{itemize}
+
+\section{Enjeux}
+
+\paragraph{Transparence publique :}
+L'obligation d'open data (cf. Section 1.1) s'est traduite par la publication de données en formats techniques (JSON DECP, codes CPV, nomenclatures M14/M57), librement accessibles mais dont l'exploitation suppose des compétences que le citoyen ordinaire ne possède pas. Il existe un écart significatif entre le droit formel d'accès à l'information et la capacité effective de l'exploiter~; c'est cet écart que ce projet cherche à réduire.
+
+\paragraph{Coût et souveraineté :}
+Les API LLM commerciales (GPT-4 Turbo : 0,01\,\$/1K tokens, Claude Sonnet : 3\,\$/M tokens) génèrent un coût récurrent difficilement compatible avec les budgets des petites collectivités. Par ailleurs, le RGPD (2018) et l'IA Act européen (2024) encadrent strictement le traitement de données citoyennes par des tiers hors UE. Un déploiement local élimine simultanément ce coût récurrent et ce risque de conformité.
+
+\paragraph{Inclusion numérique :}
+Selon le baromètre numérique de l'ARCEP (2023), 13 millions de Français se déclarent en difficulté avec les outils numériques. Une interface conversationnelle en langue naturelle réduit la barrière d'accès aux données publiques pour ce public, sans nécessiter la connaissance des structures de données sous-jacentes.
+
+\section{Objectifs du projet}
+
+\subsection{Scope et périmètre}
+
+\paragraph{Limitations assumées :} Ce projet constitue une \textit{preuve de concept} dont le périmètre est volontairement restreint par les contraintes matérielles. Avec une RTX 4070 Ti (12 GB VRAM), le fine-tuning sera réalisé sur un corpus de 4\,792 paires question-réponse (environ 476K tokens) couvrant 9 départements du Sud de la France (Aude, Bouches-du-Rhône, Gard, Haute-Garonne, Gironde, Hérault, Pyrénées-Orientales, Rhône, Tarn). Le corpus intègre cinq sources de données publiques : marchés publics DECP, élus RNE, délibérations municipales, budgets publics et procédures administratives. Cette limitation territoriale garantit la faisabilité technique tout en permettant une validation méthodologique rigoureuse de l'approche fine-tuning.
+
+\paragraph{Question de recherche centrale :} L'objectif n'est pas de créer une solution de production exhaustive, mais d'évaluer si l'approche de fine-tuning sur corpus restreint est :
+\begin{itemize}
+    \item \textbf{Techniquement viable} avec 12 GB VRAM
+    \item \textbf{Pertinente} : le modèle spécialisé surpasse-t-il les LLM généralistes sur le domaine ciblé ?
+    \item \textbf{Efficace} : amélioration mesurable de la compréhension des termes administratifs
+    \item \textbf{Reproductible} : méthodologie documentée et résultats vérifiables
+\end{itemize}
+
+\subsection{Objectifs fonctionnels}
+
+Dans le cadre de cette preuve de concept, les objectifs techniques sont :
+
+\begin{enumerate}
+    \item \textbf{Spécialiser le modèle} au vocabulaire administratif français via fine-tuning QLoRA sur un corpus ciblé de données publiques
+    
+    \item \textbf{Améliorer la compréhension} des requêtes citoyennes liées au domaine spécifique du corpus (ex: marchés publics, budgets municipaux)
+    
+    \item \textbf{Évaluer la préservation} des capacités générales du modèle (éviter le \textit{catastrophic forgetting})
+    
+    \item \textbf{Mesurer l'amélioration} par rapport au modèle baseline non fine-tuné et aux LLM généralistes
+    
+    \item \textbf{Documenter la méthodologie} pour garantir la reproductibilité complète
+\end{enumerate}
+
+\subsection{Objectifs SMART quantifiés}
+
+Les critères de succès mesurables du projet sont définis comme suit :
+
+\begin{table}[h]
+\centering
+\small
+\caption{Objectifs SMART du projet}
+\label{tab:objectifs_smart}
+\begin{tabular}{@{}p{4.2cm}p{5cm}p{3.5cm}@{}}
+\toprule
+\textbf{Métrique} & \textbf{Objectif Minimum} & \textbf{Objectif Idéal} \\ \midrule
+Perplexité corpus test & PPL $<$2.0 (amélioration $>$80\% vs baseline 11.01) & PPL $<$1.5 \\
+Précision vocabulaire admin. & $>$45\% (seuil 80\%) & $>$60\% \\
+Stabilité entraînement & Loss convergence $<$0.20 & Loss $<$0.15 \\
+Absence overfitting & Validation anti-overfitting (variance formulations) & $PPL_{train} \approx PPL_{test}$ \\ \bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Note méthodologique :} Les métriques F1-Score Q\&A et MMLU-FR (catastrophic forgetting) n'ont pas été retenues dans ce PoC compte tenu des contraintes temporelles. La priorité a été donnée aux métriques de spécialisation (PPL, précision vocabulaire) pour valider l'approche fine-tuning sur corpus territorial restreint. Cette limitation est explicitement documentée au Chapitre 4 (Section \textit{Catastrophic Forgetting : Limite Critique Non Résolue}).
+
+\subsection{Cas d'usage cibles}
+
+Trois profils utilisateurs structurent le développement, dans le cadre du périmètre géographique retenu (9 départements Sud France) :
+
+\begin{description}
+    \item[UC1 - Marie (Citoyenne, Toulouse)] Vulgarisation des budgets municipaux Haute-Garonne~:
+          pourquoi les impôts locaux augmentent, comparaison inter-communes, contextualisation intercommunale (Toulouse Métropole).
+    
+    \item[UC2 - Paul (Journaliste, Montpellier)] Enquête sur les marchés publics numériques Occitanie~:
+          agrégations DECP par acheteur/montant, détection anomalies, sources traçables (SIRET, références DECP).
+    
+    \item[UC3 - Thomas (Chercheur urbanisme, Bordeaux)] Analyse des délibérations ``mobilité douce'' en Gironde (2020--2024)~:
+          extraction thématique, métadonnées (dates, commissions), références croisées budgets.
+\end{description}
+
+\section{Innovation et valeur ajoutée}
+
+\subsection{Positionnement comme proof of concept}
+
+Ce mémoire explore une approche complémentaire aux solutions existantes, dans le cadre d'une \textit{expérimentation à ressources contraintes}. L'objectif n'est pas de remplacer les LLM généralistes ou les portails open data, mais d'évaluer si une spécialisation ciblée apporte une valeur mesurable.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Comparaison des approches (proof of concept)}
+\label{tab:comparaison_solutions}
+\begin{tabular}{@{}lp{2.5cm}p{2.5cm}p{2.5cm}@{}}
+\toprule
+\textbf{Aspect} & \textbf{ChatGPT/Claude} & \textbf{Portails Open Data} & \textbf{Notre Approche (PoC)} \\ \midrule
+Couverture & Globale & Exhaustive & \textbf{Ciblée} \\
+Spécialisation & Généraliste & Navigation manuelle & Fine-tuning domaine \\
+Vocabulaire admin. & Approximatif & Technique brut & Spécialisé \\
+Coût & API payante & Gratuit & Open-source local \\
+Ressources & Cloud API & Aucune & GPU 12\,GB VRAM \\
+Reproductibilité & Fermé & N/A & Complète (ADS) \\ \bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Apports du mémoire}
+
+\begin{enumerate}
+    \item \textbf{Sélection multicritère en contexte contraint} : Application de l'AHP pour sélectionner le modèle optimal sous contrainte VRAM de 12 GB (détaillé au Chapitre 2)
+    
+    \item \textbf{Fine-tuning efficient} : Validation de QLoRA comme nécessité technique pour adapter Mistral 7B avec 12 GB VRAM (détaillé aux Chapitres 2 et 4)
+    
+    \item \textbf{Spécialisation au domaine administratif français} : Constitution d'un corpus ciblé (délibérations, marchés publics) et évaluation de la préservation des capacités générales (\textit{catastrophic forgetting})
+    
+    \item \textbf{Reproductibilité} : Documentation complète, limites assumées, benchmarks standardisés, code et configuration accessibles
+    
+    \item \textbf{Analyse de faisabilité} : Démonstration qu'une collectivité avec budget limité peut expérimenter cette approche localement
+\end{enumerate}
+
+\section{Analyse de l'existant}
+
+\subsection{Portails open data}
+
+\textit{data.gouv.fr} recense les DECP, le RNE, les délibérations et les budgets locaux dans des formats bruts (CSV, JSON, XML). L'accès est libre, mais aucune requête en langage naturel n'est possible : l'utilisateur doit connaître la structure des données pour les exploiter. Le \textit{BOAMP} publie les avis et résultats d'attribution des marchés publics au-dessus des seuils européens, avec une recherche limitée aux mots-clés, sans agrégation ni analyse comparative. \textit{Légifrance} couvre le cadre réglementaire (Code de la commande publique) mais ne contient aucune donnée contractuelle locale. Certaines métropoles (Lyon, Bordeaux, Toulouse) proposent des portails CKAN avec API REST, mais la majorité des communes ne dispose d'aucun portail équivalent.
+
+\subsection{Outils d'intelligence artificielle dans le secteur public}
+
+\textit{Albert} (Etalab/DINUM, 2024) est un assistant LLM destiné aux agents de la fonction publique pour la rédaction et la synthèse documentaire. Il n'est pas accessible au public --- son usage est réservé aux agents publics et son déploiement au grand public n'est pas à l'ordre du jour. Son infrastructure centralisée le rend par ailleurs inadapté à un déploiement autonome par une petite collectivité. Les LLM commerciaux (ChatGPT, Claude, Gemini) offrent une interface conversationnelle de qualité mais présentent les limites structurelles détaillées en Section 1.1 (coupure temporelle, absence de données territoriales locales, transfert hors UE). Les plateformes spécialisées marchés publics (Achatpublic.info, PLACE) sont orientées acheteurs/fournisseurs et ne proposent pas d'interface citoyenne en langage naturel.
+
+\subsection{Synthèse}
+
+Aucune solution existante ne combine simultanément interface en langage naturel, données territoriales actualisées, conformité RGPD par traitement local et coût accessible aux petites collectivités.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Comparaison des solutions existantes}
+\label{tab:analyse_existant}
+\begin{tabular}{@{}lp{1.8cm}p{2.4cm}p{1.8cm}p{2cm}@{}}
+\toprule
+\textbf{Solution} & \textbf{Langage naturel} & \textbf{Données locales récentes} & \textbf{RGPD local} & \textbf{Coût accessible} \\ \midrule
+data.gouv.fr & Non & Oui & Oui & Oui \\
+BOAMP & Non & Partiel & Oui & Oui \\
+ChatGPT / Claude & Oui & Non & Non & Non \\
+Albert (DINUM) & Oui & Partiel & Oui & Non dispo. \\
+Portails locaux & Non & Oui & Oui & Variable \\
+\midrule
+\textbf{Ce projet (PoC)} & \textbf{Oui} & \textbf{Oui} & \textbf{Oui} & \textbf{Oui} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Structure du mémoire}
+
+Ce mémoire s'organise en cinq chapitres :
+
+\begin{description}
+    \item[Chapitre 1 - Introduction] présente le contexte, la problématique, les objectifs et l'innovation du projet
+    
+    \item[Chapitre 2 - Sélection du modèle] détaille la méthodologie AHP et justifie le choix de Mistral 7B v0.3
+    
+    \item[Chapitre 3 - Préparation des données] décrit la constitution du corpus d'entraînement, l'analyse qualitative et quantitative, et la validation de l'approche PoC
+    
+    \item[Chapitre 4 - Résultats et évaluation] présente la configuration technique QLoRA, les résultats expérimentaux, l'évaluation comparative avec les LLM généralistes, et la validation des objectifs SMART
+    
+    \item[Chapitre 5 - Conclusion] synthétise les contributions, discute les limites et propose des perspectives
+\end{description}

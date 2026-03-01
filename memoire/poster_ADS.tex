@@ -1,0 +1,380 @@
+% =============================================================
+% POSTER ADS — Format A0 portrait (841 × 1189 mm)
+% Loïc SERRE — CESI FISA INFO 2024-2027
+% Conforme au Guide Poster ADS 2025-2026 (R. Fossé)
+% =============================================================
+\documentclass[a0paper, portrait, 25pt]{tikzposter}
+
+% --- Packages ------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{helvet}            % Police sans-serif (Helvetica)
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, calc}
+\usepackage{colortbl}          % Couleurs dans les tableaux
+
+% --- Couleurs (palette 3 couleurs + accents) -----------------
+\definecolor{cesiBlueDark}{HTML}{1B3A5C}   % Bleu foncé (titres)
+\definecolor{cesiBlueLight}{HTML}{2C6FAC}  % Bleu moyen (blocs)
+\definecolor{cesiAccent}{HTML}{E8A838}     % Accent doré
+\definecolor{bgLight}{HTML}{F5F7FA}        % Fond blocs
+\definecolor{resultGreen}{HTML}{27AE60}    % Vert = très favorable
+\definecolor{resultOrange}{HTML}{E67E22}   % Orange = acceptable
+\definecolor{resultRed}{HTML}{E74C3C}      % Rouge = défavorable
+\definecolor{textDark}{HTML}{2C3E50}       % Texte principal
+
+% --- Thème tikzposter ----------------------------------------
+\usetheme{Default}
+
+% Style titre (bandeau supérieur)
+\definetitlestyle{CesiTitle}{
+    width=\paperwidth, roundedcorners=0, linewidth=0pt,
+    innersep=18pt, titletotopverticalspace=10mm,
+    titletoblockverticalspace=18mm
+}{
+    \begin{scope}[line width=0pt]
+        \draw[fill=cesiBlueDark, draw=none]
+            (\titleposleft,\titleposbottom)
+            rectangle (\titleposright,\titlepostop);
+        \draw[fill=cesiAccent, draw=none]
+            (\titleposleft, \titleposbottom)
+            rectangle (\titleposright, \titleposbottom+0.6cm);
+    \end{scope}
+}
+\usetitlestyle{CesiTitle}
+
+% Style blocs
+\defineblockstyle{CesiBlock}{
+    titlewidthscale=1, bodywidthscale=1,
+    titleleft, titleoffsetx=0pt, titleoffsety=0pt,
+    bodyoffsetx=0pt, bodyoffsety=0pt,
+    bodyverticalshift=0pt, roundedcorners=10,
+    linewidth=2pt, titleinnersep=10pt, bodyinnersep=16pt
+}{
+    \draw[fill=bgLight, draw=cesiBlueLight, line width=2pt, rounded corners=10pt]
+        (blockbody.south west) rectangle (blockbody.north east);
+    \draw[fill=cesiBlueLight, draw=cesiBlueLight, rounded corners=10pt]
+        (blocktitle.south west) rectangle (blocktitle.north east);
+}
+\useblockstyle{CesiBlock}
+
+% Fond blanc
+\definebackgroundstyle{CesiBg}{
+    \draw[fill=white, draw=none] (bottomleft) rectangle (topright);
+}
+\usebackgroundstyle{CesiBg}
+
+% Couleurs texte blocs
+\colorlet{blocktitlebgcolor}{cesiBlueLight}
+\colorlet{blocktitlefgcolor}{white}
+\colorlet{blockbodybgcolor}{bgLight}
+\colorlet{blockbodyfgcolor}{textDark}
+
+% --- En-tête -------------------------------------------------
+\title{%
+    \textbf{IA territoriale : d\'emocratiser les donn\'ees publiques fran\c{c}aises}%
+}
+\author{%
+    \textbf{Lo\"ic SERRE} ~--~ FISA Informatique 2024-2027 ~--~ Sopra Steria%
+}
+\institute{CESI \'Ecole d'Ing\'enieurs ~--~ Application de la D\'emarche Scientifique}
+
+\titlegraphic{%
+    \includegraphics[height=2.5cm]{images/cesi.png}%
+    ~%
+    \includegraphics[height=2cm]{images/soprasterialogo.jpg}%
+}
+
+% =============================================================
+\begin{document}
+\maketitle
+
+% --- 2 colonnes (flux de lecture en colonnes) ----------------
+\begin{columns}
+
+% ░░░░░░░░░░░░░ COLONNE GAUCHE ░░░░░░░░░░░░░░░
+\column{0.50}
+
+% === BLOC 1 : Contexte et problématique ======================
+\block{Bloc 1 --- Contexte et problématique}{
+
+    La loi République numérique (2016) impose l'ouverture des données publiques.
+    Pourtant, leur exploitation reste inaccessible aux citoyens sans compétences techniques.
+    Les LLM généralistes (ChatGPT, Claude) présentent quatre limites~: données obsolètes,
+    absence de contextualisation territoriale, vocabulaire administratif non maîtrisé
+    et coût récurrent incompatible avec les collectivités.
+
+    \vspace{10pt}
+    \begin{center}
+    \begin{tikzpicture}
+        \node[draw=cesiAccent, line width=3pt, rounded corners=10pt,
+              inner sep=14pt, fill=white, text width=32cm, align=center,
+              font=\Large\itshape\color{cesiBlueDark}] {
+            Comment créer un système d'IA spécialisé dans les données publiques\\
+            territoriales qui dépasse les limitations des LLM généralistes\\
+            pour favoriser l'engagement citoyen~?
+        };
+    \end{tikzpicture}
+    \end{center}
+}
+
+% === BLOC 2 : Solutions envisagées et comparaison =============
+\block{Bloc 2 --- Solutions envisagées et comparaison}{
+
+    Quatre approches ont été évaluées pour adapter un LLM aux données publiques territoriales~:
+
+    \vspace{8pt}
+
+    % --- Tableau comparatif avec code couleur ---
+    \begin{center}
+    \renewcommand{\arraystretch}{1.5}
+    \large
+    \begin{tabular}{@{} p{8cm} c c c c @{}}
+        \toprule
+        \textbf{Critère (pondération)}
+            & \textbf{Prompt Eng.}
+            & \textbf{RAG}
+            & \textbf{Full FT}
+            & \textbf{QLoRA FT} \\
+        \midrule
+        Faisabilité 12\,GB ($\times$3)
+            & \cellcolor{resultGreen!25}\textbf{3}
+            & \cellcolor{resultGreen!25}\textbf{3}
+            & \cellcolor{resultRed!25}\textbf{1}
+            & \cellcolor{resultGreen!25}\textbf{3} \\
+        Spécialisation vocab. ($\times$3)
+            & \cellcolor{resultRed!25}\textbf{1}
+            & \cellcolor{resultOrange!25}\textbf{2}
+            & \cellcolor{resultGreen!25}\textbf{3}
+            & \cellcolor{resultGreen!25}\textbf{3} \\
+        Conformité RGPD ($\times$2)
+            & \cellcolor{resultRed!25}\textbf{1}
+            & \cellcolor{resultGreen!25}\textbf{3}
+            & \cellcolor{resultGreen!25}\textbf{3}
+            & \cellcolor{resultGreen!25}\textbf{3} \\
+        Coût récurrent ($\times$2)
+            & \cellcolor{resultRed!25}\textbf{1}
+            & \cellcolor{resultOrange!25}\textbf{2}
+            & \cellcolor{resultOrange!25}\textbf{2}
+            & \cellcolor{resultGreen!25}\textbf{3} \\
+        Reproductibilité ($\times$1)
+            & \cellcolor{resultRed!25}\textbf{1}
+            & \cellcolor{resultOrange!25}\textbf{2}
+            & \cellcolor{resultGreen!25}\textbf{3}
+            & \cellcolor{resultGreen!25}\textbf{3} \\
+        \midrule
+        \textbf{Score pondéré (/33)}
+            & \textbf{16}
+            & \textbf{27}
+            & \cellcolor{resultRed!15}\textbf{22}
+            & \cellcolor{resultGreen!30}\textbf{33} \\
+        \bottomrule
+    \end{tabular}
+    \end{center}
+
+    \vspace{4pt}
+    \begin{center}
+    \small
+    \begin{tabular}{@{}ccc@{}}
+        \cellcolor{resultGreen!25}\quad\textbf{3}\quad = Très favorable \qquad &
+        \cellcolor{resultOrange!25}\quad\textbf{2}\quad = Acceptable \qquad &
+        \cellcolor{resultRed!25}\quad\textbf{1}\quad = Défavorable
+    \end{tabular}
+    \end{center}
+
+    \vspace{8pt}
+    $\Rightarrow$ \textbf{QLoRA retenu} (score max 33/33)~: seule approche conjuguant spécialisation, faisabilité 12\,GB et coût nul.
+
+    \vspace{12pt}
+    \textbf{Sélection du modèle de base (AHP, Saaty 1980)~:}
+
+    \vspace{6pt}
+    \begin{center}
+    \renewcommand{\arraystretch}{1.4}
+    \large
+    \begin{tabular}{@{} l c c c c @{}}
+        \toprule
+        \textbf{Critère}
+            & \textbf{LLaMA\,2}
+            & \textbf{Mistral\,7B}
+            & \textbf{Falcon\,7B}
+            & \textbf{Phi-2} \\
+        \midrule
+        Français
+            & \cellcolor{resultOrange!25}Moyen
+            & \cellcolor{resultGreen!25}\textbf{Excellent}
+            & \cellcolor{resultRed!25}Faible
+            & \cellcolor{resultOrange!25}Moyen \\
+        Licence open-source
+            & \cellcolor{resultOrange!25}Restr.
+            & \cellcolor{resultGreen!25}\textbf{Apache\,2}
+            & \cellcolor{resultGreen!25}Apache
+            & \cellcolor{resultGreen!25}MIT \\
+        Communauté
+            & \cellcolor{resultGreen!25}Forte
+            & \cellcolor{resultGreen!25}\textbf{Très forte}
+            & \cellcolor{resultOrange!25}Moyenne
+            & \cellcolor{resultRed!25}Faible \\
+        \midrule
+        \textbf{Score AHP}
+            & 0{,}22
+            & \cellcolor{resultGreen!30}\textbf{0{,}41}
+            & 0{,}19
+            & 0{,}18 \\
+        \bottomrule
+    \end{tabular}
+    \end{center}
+
+    \vspace{6pt}
+    $\Rightarrow$ \textbf{Mistral 7B v0.3} retenu (ratio cohérence CR\,=\,0{,}08\,$<$\,0{,}10).
+
+}
+
+% ░░░░░░░░░░░░░ COLONNE DROITE ░░░░░░░░░░░░░░░
+\column{0.50}
+
+% === BLOC 3 : Résultats et validation ========================
+\block{Bloc 3 --- Résultats et validation}{
+
+    Fine-tuning QLoRA de Mistral 7B sur un corpus de \textbf{5\,460 paires Q/R}
+    (542K tokens, 5 sources publiques, 9 départements).
+    Entraînement sur RTX 4070 Ti (12\,GB), budget 0\,€.
+
+    \vspace{10pt}
+
+    % Tableau de résultats
+    \begin{center}
+    \renewcommand{\arraystretch}{1.5}
+    \large
+    \begin{tabular}{@{} l c c c @{}}
+        \toprule
+        \textbf{Métrique} & \textbf{Base} & \textbf{Fine-Tuné} & \textbf{Amélioration} \\
+        \midrule
+        Perplexité
+            & 11{,}01 & \cellcolor{resultGreen!25}\textbf{1{,}37}
+            & \textcolor{resultGreen}{\textbf{$-$87{,}5\,\%}} \\
+        Loss (cross-entropy)
+            & 2{,}40 & \cellcolor{resultGreen!25}\textbf{0{,}32}
+            & \textcolor{resultGreen}{\textbf{$-$86{,}8\,\%}} \\
+        Précision (seuil 80\,\%)
+            & 0\,\% & \cellcolor{resultGreen!25}\textbf{83{,}3\,\%}
+            & \textcolor{resultGreen}{\textbf{+83{,}3 pts}} \\
+        Garde-fous (7 Q)
+            & 100\,\% & \cellcolor{resultGreen!25}\textbf{100\,\%}
+            & Maintenu \\
+        Vitesse d'inférence
+            & 19{,}6\,t/s & 10{,}4\,t/s
+            & \textcolor{resultOrange}{\textbf{$-$47\,\%}} \\
+        \bottomrule
+    \end{tabular}
+    \end{center}
+
+    \vspace{10pt}
+
+    % --- Encarts visuels grands chiffres ---
+    \begin{center}
+    \begin{tikzpicture}
+        % Perplexité
+        \node[draw=resultGreen, fill=resultGreen!8, rounded corners=10pt,
+              minimum width=11.5cm, minimum height=5cm, align=center,
+              line width=2pt] (ppl) at (0,0) {
+            {\fontsize{20}{22}\selectfont\color{cesiBlueDark}\textbf{Perplexité}}\\[6pt]
+            {\fontsize{48}{52}\selectfont\color{resultGreen}\textbf{1{,}37}}\\[4pt]
+            {\normalsize $-$87{,}5\,\% vs baseline}
+        };
+        % Précision
+        \node[draw=resultGreen, fill=resultGreen!8, rounded corners=10pt,
+              minimum width=11.5cm, minimum height=5cm, align=center,
+              line width=2pt] (acc) at (13,0) {
+            {\fontsize{20}{22}\selectfont\color{cesiBlueDark}\textbf{Précision}}\\[6pt]
+            {\fontsize{48}{52}\selectfont\color{resultGreen}\textbf{83{,}3\,\%}}\\[4pt]
+            {\normalsize 25/30 réponses correctes}
+        };
+        % Ressources
+        \node[draw=cesiBlueLight, fill=cesiBlueLight!8, rounded corners=10pt,
+              minimum width=11.5cm, minimum height=5cm, align=center,
+              line width=2pt] (hw) at (26,0) {
+            {\fontsize{20}{22}\selectfont\color{cesiBlueDark}\textbf{Ressources}}\\[6pt]
+            {\fontsize{36}{40}\selectfont\color{cesiBlueLight}\textbf{92\,min}}
+            {\fontsize{28}{32}\selectfont\color{textDark}~|~}
+            {\fontsize{36}{40}\selectfont\color{cesiBlueLight}\textbf{5{,}3\,GB}}\\[4pt]
+            {\normalsize Entraînement~|~VRAM (44\,\%)}
+        };
+    \end{tikzpicture}
+    \end{center}
+
+    \vspace{10pt}
+
+    % Confrontation aux critères initiaux
+    \textbf{Validation des objectifs SMART~:}
+
+    \vspace{6pt}
+    \begin{center}
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabular}{@{} l c c c @{}}
+        \toprule
+        \textbf{Objectif} & \textbf{Cible min.} & \textbf{Obtenu} & \textbf{Statut} \\
+        \midrule
+        Perplexité domaine    & PPL\,$<$\,2{,}0  & \textbf{1{,}37}    & \cellcolor{resultGreen!25}$\checkmark$ Dépassé \\
+        Précision vocab.      & $>$\,45\,\%      & \textbf{83{,}3\,\%}& \cellcolor{resultGreen!25}$\checkmark$ Dépassé \\
+        Absence overfitting   & Val $\approx$ Test& Validé             & \cellcolor{resultGreen!25}$\checkmark$ OK \\
+        Loss $<$ 0{,}20       & $<$\,0{,}20      & 0{,}32             & \cellcolor{resultOrange!25}$\sim$ Non atteint \\
+        \bottomrule
+    \end{tabular}
+    \end{center}
+}
+
+% === BLOC 4 : Conclusion et perspectives ======================
+\block{Bloc 4 --- Conclusion et perspectives}{
+
+    \textbf{Réponse à la problématique~:}
+    Avec du matériel grand public (RTX 4070 Ti, 12\,GB) et un budget de 0\,€,
+    le fine-tuning QLoRA de Mistral 7B surpasse la baseline de 87{,}5\,\%
+    sur les données DECP/RNE et atteint 83{,}3\,\% de précision factuelle.
+    Le modèle spécialisé est un \textbf{complément local, gratuit et souverain}
+    aux LLM généralistes pour les collectivités territoriales.
+
+    \vspace{10pt}
+    \begin{minipage}[t]{0.48\linewidth}
+        \textbf{\color{resultOrange}Limites~:}
+        \begin{itemize}[leftmargin=12pt, itemsep=3pt]
+            \item Catastrophic forgetting non mesuré
+            \item 9/101 départements couverts
+            \item Pas de validation humaine
+            \item Vitesse $-$47\,\% (LoRA non fusionné)
+        \end{itemize}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[t]{0.48\linewidth}
+        \textbf{\color{resultGreen}Perspectives~:}
+        \begin{itemize}[leftmargin=12pt, itemsep=3pt]
+            \item Benchmark MMLU-FR post-FT
+            \item Intégration RAG (FAISS)
+            \item Extension géographique nationale
+            \item Interface Streamlit pour citoyens
+        \end{itemize}
+    \end{minipage}
+}
+
+% === Pied de page : Références ================================
+\block{\small Références}{
+    \small
+    \begin{itemize}[leftmargin=10pt, itemsep=2pt, label={}]
+        \item [1] Saaty (1980), \textit{The Analytic Hierarchy Process}, McGraw-Hill.
+        \item [2] Hu et al. (2021), \textit{LoRA: Low-Rank Adaptation of Large Language Models}, arXiv:2106.09685.
+        \item [3] Dettmers et al. (2023), \textit{QLoRA: Efficient Finetuning of Quantized LLMs}, NeurIPS.
+        \item [4] Jiang et al. (2023), \textit{Mistral 7B}, arXiv:2310.06825.
+        \item [5] Loi n°2016-1321 pour une République numérique.
+    \end{itemize}
+}
+
+\end{columns}
+
+\end{document}

@@ -1,0 +1,360 @@
+\documentclass[12pt,a4paper,twoside]{report}
+
+% Packages essentiels
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{cite}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{amsfonts}
+\usepackage{setspace}
+\usepackage{mathptmx}  % Police Times New Roman
+
+% Configuration de la géométrie (Guide ADS : 2.5 cm tous côtés)
+\geometry{
+    left=2.5cm,
+    right=2.5cm,
+    top=2.5cm,
+    bottom=2.5cm,
+    headheight=15pt,
+    headsep=10pt,
+    footskip=20pt
+}
+
+% Interligne 1.15 (exigence Guide ADS)
+\setstretch{1.15}
+
+% Configuration des en-têtes et pieds de page
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\thepage}
+\fancyhead[RE]{\nouppercase{\leftmark}}
+\fancyhead[LO]{\nouppercase{\rightmark}}
+
+% Configuration des liens hypertextes
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,      
+    urlcolor=black,
+    citecolor=black,
+    pdftitle={Système d'IA territorial pour la démocratisation des données publiques},
+    pdfauthor={Loïc SERRE},
+}
+
+% Configuration des listings de code
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    captionpos=b,
+    showstringspaces=false
+}
+
+% Définition des couleurs
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+% Placement précis des flottants
+\usepackage{float}
+
+% Commandes personnalisées
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\term}[1]{\textit{#1}}
+
+% Réduction de l'espace avant les titres de chapitre
+\makeatletter
+\renewcommand{\@makechapterhead}[1]{%
+  \vspace*{0pt}% Espace minimal avant le titre
+  {\parindent \z@ \raggedright \normalfont
+    \ifnum \c@secnumdepth >\m@ne
+        \huge\bfseries \@chapapp\space \thechapter
+        \par\nobreak
+        \vskip 8\p@
+    \fi
+    \interlinepenalty\@M
+    \Huge \bfseries #1\par\nobreak
+    \vskip 15\p@
+  }}
+\renewcommand{\@makeschapterhead}[1]{%
+  \vspace*{0pt}% Espace minimal avant le titre
+  {\parindent \z@ \raggedright
+    \normalfont
+    \interlinepenalty\@M
+    \Huge \bfseries  #1\par\nobreak
+    \vskip 15\p@
+  }}
+\makeatother
+
+\begin{document}
+
+% Page de garde
+\begin{titlepage}
+    \centering
+    
+    % En-tête épuré
+    \vspace*{0.5cm}
+    {\large\textsc{Application à la Démarche Scientifique}}\\[0.15cm]
+    {\small FISA Informatique 2024--2027}\\[0.4cm]
+    {\color{gray}\rule{\textwidth}{0.8pt}}
+    
+    \vspace{2cm}
+    
+    % Titre principal moderne
+    {\Huge\bfseries IA spécialisée pour l'exploitation des données publiques}\\[0.3cm]
+    
+    % Problématique avec design moderne
+    \begin{tikzpicture}
+        \node[rectangle, rounded corners=5pt, draw=gray!60, fill=gray!5, 
+              text width=0.85\textwidth, inner sep=12pt, align=center] {
+            {\large\textbf{Problématique}}\\[0.4cm]
+            \small\textit{Comment créer un système d'IA spécialisé dans les données publiques\\
+            qui dépasse les limitations des LLM généralistes\\
+            pour favoriser l'engagement citoyen ?}
+        };
+    \end{tikzpicture}
+    
+    \vspace{1.5cm}
+    
+    % Informations compactes
+    \begin{minipage}{0.6\textwidth}
+        \centering
+        \begin{tabular}{>{\small\bfseries}r >{\small}l}
+            Auteur : & Loïc SERRE \\[0.15cm]
+            Entreprise : & Sopra Steria \\[0.15cm]
+            École : & CESI École d'Ingénieurs \\[0.15cm]
+            Tuteur pédagogique : & Rohan FOSSE \\[0.15cm]
+            Tuteur entreprise : & Rémy TARTIERE \\
+        \end{tabular}
+    \end{minipage}
+    
+    \vspace{1.5cm}
+    
+    % Logos optimisés
+    \begin{minipage}{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.85\textwidth]{images/cesi.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.4\textwidth}
+        \centering
+        \includegraphics[width=0.85\textwidth]{images/soprasterialogo.jpg}
+    \end{minipage}
+    
+    \vfill
+    
+    % Footer moderne
+    {\color{gray}\rule{\textwidth}{0.8pt}}\\[0.2cm]
+    {\small Année universitaire 2025--2026}
+\end{titlepage}
+
+% Table des matières
+\tableofcontents
+\newpage
+
+% Liste des tableaux
+\listoftables
+\addcontentsline{toc}{chapter}{Liste des tableaux}
+\newpage
+
+% Liste des figures
+\listoffigures
+\addcontentsline{toc}{chapter}{Liste des figures}
+\newpage
+
+% Résumé
+\chapter*{Résumé}
+\addcontentsline{toc}{chapter}{Résumé}
+
+Les données publiques françaises --- marchés publics, budgets municipaux, listes d'élus --- sont accessibles à tous en théorie, mais restent incompréhensibles pour la grande majorité des citoyens. Leurs formats techniques (JSON, nomenclatures M14/M57, codes CPV) supposent des compétences que le citoyen ordinaire ne possède pas. Pourtant, la loi pour une République numérique (2016) fait de cet accès un droit fondamental.
+
+Ce mémoire explore, dans le cadre d'une preuve de concept, la possibilité d'utiliser l'intelligence artificielle pour combler cet écart~: permettre à un habitant de poser une question simple --- \og{}Qui a obtenu le marché de rénovation de mon école~?\fg{} --- et d'obtenir une réponse fiable, en langage courant, sans compétence technique.
+
+L'approche repose sur le fine-tuning d'un modèle open-source (Mistral 7B) via QLoRA, entraîné sur un corpus de 5\,460 paires question-réponse issues de données publiques authentiques (DECP, RNE, délibérations, budgets) couvrant 9 départements du Sud de la France. L'ensemble du processus --- sélection du modèle par AHP, constitution du corpus, entraînement de 92 minutes sur une carte graphique grand public (RTX 4070 Ti, 12~GB) --- a été conduit avec 0\,\texteuro{} de budget logiciel.
+
+Les résultats montrent une précision factuelle de 83,3\,\% sur les questions territoriales (contre 0\,\% pour le modèle non spécialisé) et une perplexité réduite de 87,5\,\%. Ce PoC ne constitue pas une solution de production~: le corpus reste limité (9 départements sur 101), le catastrophic forgetting n'a pas été mesuré et aucune évaluation humaine n'a été conduite. Mais il démontre qu'il est techniquement possible, avec des moyens modestes, de rendre les données publiques compréhensibles par tous.
+
+\textbf{Mots-clés~:} Fine-tuning LLM, QLoRA, Données Publiques, Mistral 7B, Proof of Concept, Accès citoyen
+
+\medskip
+\noindent\textbf{Code source~:} \url{https://github.com/LoicSERRE/ADS}
+
+% Abstract (English)
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+French public data --- procurement contracts, municipal budgets, elected officials registers --- are theoretically open to all citizens, yet remain incomprehensible to most. Their technical formats (JSON, M14/M57 nomenclatures, CPV codes) require expertise that ordinary citizens do not possess. This thesis explores, as a proof of concept, whether artificial intelligence can bridge this gap~: enabling a citizen to ask a simple question --- ``Who won the contract for my school renovation?'' --- and receive a reliable, plain-language answer.
+
+The approach relies on fine-tuning an open-source model (Mistral 7B) using QLoRA, trained on 5,460 question-answer pairs from authentic public data (DECP contracts, RNE elected officials, municipal deliberations, budgets) covering 9 departments in southern France. The entire process --- AHP model selection, corpus construction, 92-minute training on a consumer GPU (RTX 4070~Ti, 12~GB) --- was conducted at zero software cost.
+
+Results show 83.3\% factual accuracy on territorial questions (vs.\ 0\% for the unspecialised model) and an 87.5\% perplexity reduction. This proof of concept is not a production-ready solution~: the corpus covers only 9 out of 101 departments, catastrophic forgetting was not measured, and no human evaluation was conducted. However, it demonstrates that making public data understandable for all citizens is technically feasible with modest resources.
+
+\textbf{Keywords:} LLM Fine-tuning, QLoRA, Public Data, Mistral 7B, Proof of Concept, Citizen Access
+
+\medskip
+\noindent\textbf{Source code:} \url{https://github.com/LoicSERRE/ADS}
+
+\chapter*{Remerciements}
+\addcontentsline{toc}{chapter}{Remerciements}
+
+Nous tenons à remercier notre tuteur pédagogique, \textbf{Rohan FOSSE}, pour son accompagnement tout au long de cette formation FISA Informatique.
+
+Nous remercions également l'\textbf{équipe pédagogique du CESI École d'Ingénieurs} pour l'encadrement du module Application à la Démarche Scientifique.
+
+Ce projet a été mené de façon entièrement autonome, en exploitant uniquement des données publiques librement accessibles sur \textbf{data.gouv.fr} (DECP, RNE, délibérations). Nous remercions à ce titre l'ensemble des acteurs publics qui rendent ces données disponibles sous licence ouverte, ainsi que la communauté open-source (HuggingFace, Mistral AI, PEFT) dont les outils et contributions ont rendu ce travail techniquement réalisable.
+
+\chapter*{Liste des acronymes}
+\addcontentsline{toc}{chapter}{Liste des acronymes}
+
+\begin{description}[style=nextline]
+    \item[ADS] Application à la Démarche Scientifique (mémoire)
+    \item[AHP] Analytic Hierarchy Process
+    \item[API] Application Programming Interface
+    \item[BOAMP] Bulletin Officiel des Annonces de Marchés Publics
+    \item[DECP] Données Essentielles de la Commande Publique
+    \item[DINUM] Direction Interministérielle du Numérique
+    \item[FP16] Floating Point 16 bits
+    \item[FQuAD] French Question Answering Dataset
+    \item[GQA] Grouped Query Attention
+    \item[INT8] Integer 8 bits
+    \item[LLM] Large Language Model
+    \item[LoRA] Low-Rank Adaptation
+    \item[MMLU] Massive Multitask Language Understanding
+    \item[MMLU-FR] MMLU version française
+    \item[MVP] Minimum Viable Product
+    \item[NF4] NormalFloat 4-bit (quantization)
+    \item[NLP] Natural Language Processing
+    \item[OOM] Out of Memory
+    \item[PIAF] Pour une IA Francophone
+    \item[PPL] Perplexité (Perplexity)
+    \item[QLoRA] Quantized Low-Rank Adaptation
+    \item[RAG] Retrieval-Augmented Generation
+    \item[RGPD] Règlement Général sur la Protection des Données
+    \item[RNE] Répertoire National des Élus
+    \item[SWA] Sliding Window Attention
+    \item[VRAM] Video Random Access Memory
+\end{description}
+
+% ============================================================================
+% CHAPITRES DU MÉMOIRE (fichiers séparés)
+% ============================================================================
+
+\input{chapitre1_introduction}
+\input{chapitre2_selection_modele}
+\input{chapitre3_corpus}
+\input{chapitre4_resultats}
+\input{chapitre5_conclusion}
+
+% ============================================================================
+% RÉFÉRENCES BIBLIOGRAPHIQUES
+% ============================================================================
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+% ============================================================================
+% ANNEXES
+% ============================================================================
+
+\appendix
+\chapter{Annexes techniques}
+
+\section{Pipeline de préparation des données}
+
+Le pipeline de préparation du corpus est constitué de cinq scripts Python exécutés séquentiellement~:
+
+\begin{enumerate}
+    \item \code{01\_collect\_real\_data.py} --- Collecte des données brutes depuis les APIs publiques (data.gouv.fr, data.economie.gouv.fr)
+    \item \code{02\_generate\_varied\_questions.py} --- Génération de paires question-réponse diversifiées à partir des données collectées
+    \item \code{03\_clean\_existing\_corpus.py} --- Nettoyage du corpus (suppression doublons partiels, normalisation encodage)
+    \item \code{04\_merge\_and\_deduplicate.py} --- Fusion des sources et déduplication par hash SHA-256
+    \item \code{05\_optimize\_for\_12gb.py} --- Optimisation pour contrainte VRAM 12~GB (sélection, troncature)
+\end{enumerate}
+
+Le code source complet est disponible dans le dépôt GitHub du projet.
+
+\section{Configuration complète QLoRA}
+
+Paramètres détaillés de la configuration d'entraînement~:
+
+\begin{table}[h]
+\centering
+\small
+\caption{Hyperparamètres complets QLoRA}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Paramètre} & \textbf{Valeur} \\ \midrule
+Quantisation & NF4 4-bit + double quantisation \\
+LoRA rank (r) & 32 \\
+LoRA alpha & 64 \\
+LoRA dropout & 0.05 \\
+Modules cibles & q\_proj, k\_proj, v\_proj, o\_proj, gate\_proj, up\_proj, down\_proj \\
+Batch size & 1 (effectif 8 via gradient accumulation) \\
+Learning rate & 2e-4 (cosine scheduler) \\
+Warmup ratio & 0.03 \\
+Weight decay & 0.01 \\
+Max gradient norm & 0.3 \\
+Optimizer & paged\_adamw\_8bit \\
+Précision calcul & FP16 \\
+Gradient checkpointing & Activé \\
+Seed & 42 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Exemples de paires question-réponse}
+
+Extraits représentatifs du corpus d'entraînement~:
+
+\begin{description}
+    \item[DECP] \textit{Q~:} ``Quel est le montant du marché de voirie passé par la Métropole de Montpellier~?'' \\
+    \textit{R~:} ``Le marché de voirie attribué par Montpellier Méditerranée Métropole s'élève à 1\,250\,000 EUR. [Source~: DECP HERAULT-34]''
+    
+    \item[RNE] \textit{Q~:} ``Qui est le maire de Toulouse~?'' \\
+    \textit{R~:} ``Selon le Répertoire National des Élus, le maire de Toulouse (31555) est Jean-Luc Moudenc. [Source~: RNE Haute-Garonne]''
+    
+    \item[Garde-fou] \textit{Q~:} ``Quelle est la météo à Tokyo~?'' \\
+    \textit{R~:} ``Cette question sort du périmètre de mes données. Je suis spécialisé dans les données publiques territoriales françaises (DECP, RNE).''
+\end{description}
+
+\end{document}

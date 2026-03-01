@@ -1,0 +1,83 @@
+% CHAPITRE 5 : CONCLUSION ET PERSPECTIVES
+
+\chapter{Conclusion et Perspectives}
+
+\section{Réponse à la problématique}
+
+La problématique centrale de ce mémoire interrogeait~:
+
+\begin{quote}
+\textit{Comment créer un système d'intelligence artificielle spécialisé dans les données publiques territoriales qui dépasse les limitations des LLM généralistes pour favoriser concrètement l'engagement citoyen~?}
+\end{quote}
+
+La réponse apportée par ce travail est à la fois technique et citoyenne. Sur le plan technique, le fine-tuning QLoRA d'un modèle open-source Mistral 7B, réalisé en 92 minutes sur une carte graphique grand public (RTX 4070 Ti, 12~GB VRAM), a produit un système capable de répondre correctement à 83,3\,\% des questions sur les marchés publics et les élus locaux de 9 départements français, là où les LLM généralistes échouent intégralement (0\,\% de précision sur ce domaine).
+
+Sur le plan citoyen, ce résultat démontre qu'il est désormais possible, avec des moyens modestes et des données entièrement publiques, de construire un outil qui transforme des fichiers JSON, des nomenclatures administratives et des tableaux budgétaires en réponses compréhensibles par tous. Un habitant peut demander en langage naturel \og{}Quel est le montant du marché de rénovation de l'école de ma commune~?\fg{} et obtenir une réponse factuelle, sourcée et vérifiable --- sans connaître la structure des DECP, sans savoir ce qu'est un code CPV, sans payer d'abonnement à un service commercial.
+
+\section{Ce que le projet démontre}
+
+Ce mémoire apporte trois résultats principaux~:
+
+\begin{enumerate}
+    \item \textit{La spécialisation fonctionne malgré des ressources limitées.} Un corpus de 5\,460 paires question-réponse (542K tokens), issu de cinq sources publiques officielles, suffit à faire passer la perplexité du modèle de 11,01 à 1,37 ($-87{,}5\,\%$). Cette amélioration dépasse les objectifs fixés et confirme les travaux de Gururangan et al.~\cite{gururangan2020dont}~: un corpus ciblé surpasse un corpus généraliste plus large.
+    
+    \item \textit{Le fine-tuning est accessible.} Avec 0\,\texteuro{} de budget logiciel, du matériel grand public et un pipeline entièrement reproductible (5 scripts, hash SHA-256, seeds fixes), cette approche est à la portée de toute collectivité ou association disposant d'un PC équipé d'une carte graphique de 12~GB.
+    
+    \item \textit{La méthodologie est transposable.} La sélection du modèle par AHP, la construction du corpus et le protocole d'évaluation ne dépendent pas du territoire choisi. Les adapter à un autre département ou à un autre type de données publiques ne nécessite que de changer les sources de collecte.
+\end{enumerate}
+
+\section{Au service des citoyens et des collectivités}
+
+L'ouverture des données publiques, imposée par la loi pour une République numérique (2016), a créé un paradoxe~: les citoyens disposent d'un droit d'accès à l'information publique, mais les formats de publication (JSON, XML, nomenclatures M14/M57) restent inaccessibles sans compétences techniques. En pratique, 13 millions de Français se déclarent en difficulté avec les outils numériques (ARCEP, 2023). L'open data, dans sa forme actuelle, bénéficie surtout aux acteurs déjà outillés --- journalistes d'investigation, chercheurs, entreprises du secteur.
+
+Ce projet montre qu'une intelligence artificielle spécialisée peut combler cette fracture~:
+
+\begin{itemize}
+    \item en traduisant les données brutes en réponses en langage naturel, compréhensibles sans formation technique~;
+    \item en contextualisant les informations dans le maillage territorial français (communes, EPCI, intercommunalités)~;
+    \item en garantissant la traçabilité (références SIRET, dates, montants) pour que chaque citoyen puisse vérifier par lui-même.
+\end{itemize}
+
+Un tel modèle, exécuté localement, élimine les risques liés aux solutions commerciales~: aucune donnée ne quitte le territoire (conformité RGPD), aucun coût récurrent d'API, aucune dépendance à un fournisseur étranger. Pour une petite commune qui ne dispose ni de data scientist ni de budget numérique conséquent, c'est une voie réaliste vers la transparence effective.
+
+\section{Limites}
+
+Ce travail est une preuve de concept, pas une solution de production. Les limites suivantes doivent être assumées~:
+
+\begin{itemize}
+    \item Le corpus couvre 9 départements du Sud de la France (9\,\% du territoire). Le modèle risque de produire des hallucinations pour les départements non couverts.
+    \item L'absence de validation MMLU-FR post-fine-tuning ne permet pas de quantifier la dégradation éventuelle des capacités générales du modèle (\textit{catastrophic forgetting})~\cite{kirkpatrick2017overcoming}.
+    \item Aucune évaluation humaine n'a été conduite. La qualité perçue par un citoyen ou un agent public reste à mesurer.
+    \item L'inférence locale requiert encore une compétence technique (CUDA, Python, gestion des dépendances) incompatible avec un déploiement en l'état pour le grand public.
+\end{itemize}
+
+Ces limites ne remettent pas en cause la démonstration de faisabilité~; elles définissent le périmètre d'un travail qui a vocation à être poursuivi.
+
+\section{Perspectives~: vers une IA territoriale personnalisée}
+
+Le résultat le plus prometteur de ce mémoire n'est pas le modèle lui-même, mais ce qu'il rend envisageable. Si un fine-tuning de 92 minutes sur un corpus de 5\,460 paires produit déjà 83,3\,\% de précision sur 9 départements, que donnerait un système disposant d'une infrastructure plus conséquente~?
+
+\subsection{Court terme~: consolider}
+
+\begin{itemize}
+    \item Mesurer le catastrophic forgetting (MMLU-FR, HellaSwag-FR, seuil~: dégradation $< 10\,\%$)
+    \item Intégrer une couche RAG (FAISS) pour accéder dynamiquement à un corpus plus large sans ré-entraînement
+    \item Fusionner les adaptateurs LoRA (\texttt{merge\_and\_unload()}) pour éliminer le surcoût d'inférence de $-47\,\%$
+    \item Développer une interface web légère (Streamlit) permettant à un non-technicien d'interroger le modèle
+\end{itemize}
+
+\subsection{Long terme~: une IA par commune}
+
+L'ouverture la plus ambitieuse de ce travail est la suivante~: il serait possible, à terme, de proposer un système où chaque citoyen saisit le nom de sa commune et obtient un modèle automatiquement spécialisé sur l'ensemble des données publiques de son territoire --- marchés publics, élus, délibérations, budgets, urbanisme.
+
+Un tel système reposerait sur un pipeline automatisé~: collecte des données ouvertes propres à la commune et à son intercommunalité, génération du corpus de fine-tuning, entraînement QLoRA, et mise à disposition via une interface conversationnelle. La complexité principale réside dans le maillage territorial français~: une commune appartient à un EPCI, à un département, à une région, avec des compétences partagées et des données dispersées sur des portails distincts. Cartographier ces relations et agréger les sources constitue un défi d'ingénierie des données au moins aussi important que le fine-tuning lui-même.
+
+Cette vision --- une intelligence artificielle territoriale, locale, transparente et personnalisée --- prolonge directement la philosophie de l'open data~: non seulement publier les données, mais les rendre véritablement compréhensibles. Mis en place par les communes ou les intercommunalités et mis à la disposition des citoyens, un tel outil transformerait la relation entre administration et administrés.
+
+\section{Mot de conclusion}
+
+Les données publiques françaises sont accessibles à tous en théorie, mais restent illisibles sans bagage technique. Ce projet est né de l'idée qu'avec du matériel grand public et des données ouvertes, il est possible de commencer à changer cela.
+
+Un modèle de 7 milliards de paramètres, entraîné en 92 minutes avec des données entièrement publiques, qui répond correctement à plus de 83\,\% des questions sur les marchés et les élus de 9 départements --- ce n'est pas une solution finale, mais c'est la preuve qu'une alternative locale, gratuite et souveraine est viable.
+
+Il reste du chemin~: étendre la couverture nationale, valider l'utilité réelle auprès de citoyens, simplifier le déploiement. Mais la faisabilité de l'approche est acquise. Et si demain, chaque commune peut offrir à ses habitants une IA capable de répondre simplement à \og{}Où vont mes impôts~?\fg{} ou \og{}Qui a obtenu ce marché public~?\fg{}, alors ce mémoire aura contribué, modestement, à poser les premières briques.

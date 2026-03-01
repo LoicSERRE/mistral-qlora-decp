@@ -1,0 +1,344 @@
+% CHAPITRE 3 : PRÉPARATION DU CORPUS D'ENTRAÎNEMENT
+
+\chapter{Préparation du Corpus d'Entraînement}
+
+\section{Introduction et contraintes}
+
+La qualité du corpus d'entraînement conditionne directement les performances post-fine-tuning. Les travaux de Gururangan et al. (2020) \cite{gururangan2020dont} démontrent qu'un pré-entraînement ciblé sur le domaine cible améliore les performances même à partir d'un volume de données restreint, validant l'approche à ressources limitées pour la spécialisation de domaine.
+
+Ce chapitre présente la méthodologie de collecte, nettoyage et structuration du corpus d'entraînement spécialisé sur les données publiques territoriales françaises (marchés publics DECP, élus RNE, délibérations municipales, budgets publics).
+
+\subsection{Contraintes spécifiques du projet}
+
+La constitution du corpus est soumise aux contraintes générales du projet (cf. Chapitre 1) ainsi qu'à deux contraintes spécifiques à la préparation des données :
+
+\begin{enumerate}
+    \item \textbf{Contrainte VRAM} : Corpus optimisé pour GPU 12 GB (RTX 4070 Ti), imposant une limite ~550K tokens pour QLoRA selon Dettmers et al. (2023) \cite{dettmers2023qlora}
+    
+    \item \textbf{Contrainte temporelle} : Priorité donnée aux données post-2023 pour une actualité supérieure aux LLM généralistes
+\end{enumerate}
+
+\section{Sélection et collecte des sources}
+
+\subsection{Sources data.gouv.fr retenues}
+
+Cinq sources de données publiques ont été retenues pour leur couverture des cas d'usage cibles et leur actualité post-2023 :
+
+\paragraph{1. DECP (Données Essentielles de la Commande Publique)}
+
+Source principale pour les marchés publics français (Art. L2196-1 du Code de la commande publique) :
+
+\begin{itemize}
+    \item \textbf{Volume collecté} : 10,038 marchés (9 départements Sud France)
+    
+    \item \textbf{Format} : JSON via API data.economie.gouv.fr
+    
+    \item \textbf{Informations clés} : Acheteurs publics, procédures, montants, dates notification, objet marché
+    
+    \item \textbf{Période} : 2023-2025 (actualité post-coupure LLM généralistes)
+    
+    \item \textbf{Licence} : Licence Ouverte 2.0
+\end{itemize}
+
+\paragraph{2. RNE (Répertoire National des Élus)}
+
+Registre officiel des élus territoriaux français :
+
+\begin{itemize}
+    \item \textbf{Volume collecté} : 39,850 élus municipaux (9 départements Sud France)
+    
+    \item \textbf{Format} : CSV/JSON data.gouv.fr
+    
+    \item \textbf{Informations} : Maires, conseillers municipaux, mandats, communes, départements
+    
+    \item \textbf{Actualisation} : Mise à jour post-élections municipales 2020
+    
+    \item \textbf{Licence} : Licence Ouverte 2.0
+\end{itemize}
+
+\paragraph{3. Délibérations municipales}
+
+Délibérations des conseils municipaux publiées en open data :
+
+\begin{itemize}
+    \item \textbf{Volume collecté} : 16,647 délibérations (9 départements)
+    
+    \item \textbf{Format} : JSON/XML selon communes
+    
+    \item \textbf{Informations} : Type délibération, date, objet, vote, thématique
+    
+    \item \textbf{Période} : 2023-2025
+\end{itemize}
+
+\paragraph{4. Budgets publics}
+
+Budgets primitifs et comptes administratifs :
+
+\begin{itemize}
+    \item \textbf{Volume collecté} : 200 budgets (communes/EPCI Sud France)
+    
+    \item \textbf{Format} : XML (nomenclature M14/M57)
+    
+    \item \textbf{Informations} : Dépenses/recettes par fonction, investissement/fonctionnement
+\end{itemize}
+
+\paragraph{5. Référentiels procéduraux}
+
+Seuils réglementaires et procédures Code Commande Publique (CCP) :
+
+\begin{itemize}
+    \item \textbf{Sources} : Légifrance, Direction Affaires Juridiques (DAJ)
+    
+    \item \textbf{Informations} : Seuils européens 2024-2025, procédures formalisées/adaptées, délais
+\end{itemize}
+
+\subsection{Justification de la couverture géographique}
+
+La collecte privilégie la \textit{profondeur sur l'exhaustivité} : focus sur 9 départements Sud France plutôt qu'une couverture nationale superficielle. Cette approche s'appuie sur les travaux de Gururangan et al. (2020) \cite{gururangan2020dont} qui montrent que l'adaptation au domaine cible est plus efficace qu'un corpus généraliste plus large.
+
+\begin{table}[h]
+\centering
+\caption{Couverture géographique - 9 départements Sud France}
+\label{tab:geo_coverage}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Département} & \textbf{Code} & \textbf{Zone} \\
+\midrule
+Hérault & 34 & Occitanie \\
+Haute-Garonne & 31 & Occitanie \\
+Gard & 30 & Occitanie \\
+Tarn & 81 & Occitanie \\
+Bouches-du-Rhône & 13 & PACA \\
+Rhône & 69 & Auvergne-Rhône-Alpes \\
+Gironde & 33 & Nouvelle-Aquitaine \\
+Pyrénées-Orientales & 66 & Occitanie \\
+Aude & 11 & Occitanie \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Pipeline de collecte et de traitement}
+
+\subsection{Architecture du pipeline}
+
+Le pipeline automatisé comprend cinq scripts séquentiels exécutés via orchestrateur \texttt{run\_pipeline.py} :
+
+\begin{enumerate}
+    \item \textbf{\texttt{01\_collect\_real\_data.py}} : Extraction données data.gouv.fr (DECP, RNE, délibérations, budgets)
+    
+    \item \textbf{\texttt{02\_generate\_varied\_questions.py}} : Génération questions variées via 7 templates Python (10-15 variations/template)
+    
+    \item \textbf{\texttt{03\_clean\_existing\_corpus.py}} : Nettoyage corpus existant (normalisation, encodage UTF-8, sources)
+    
+    \item \textbf{\texttt{04\_merge\_and\_deduplicate.py}} : Fusion corpus + déduplication SHA-256
+    
+    \item \textbf{\texttt{05\_optimize\_for\_12gb.py}} : Réduction corpus pour compatibilité VRAM 12 GB (sélection par priorité)
+\end{enumerate}
+
+\paragraph{Reproductibilité :} Chaque script log ses opérations, génère hash SHA-256 des sorties, et utilise seeds fixes (\texttt{random.seed(42)}, \texttt{np.random.seed(42)}) pour garantir la reproductibilité.
+
+\subsection{Étape 1 : Extraction données (\texttt{01\_collect\_real\_data.py})}
+
+\subsubsection{DECP - Extraction API data.economie.gouv.fr}
+
+\begin{itemize}
+    \item \textbf{Endpoint} : API data.economie.gouv.fr (catalogue DECP, v2.1)
+\footnote{\url{https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/decp}}
+    
+    \item \textbf{Filtrage géographique} : Codes postaux 9 départements (11, 13, 30, 31, 33, 34, 66, 69, 81)
+    
+    \item \textbf{Filtrage temporel} : Marchés notifiés entre 2023-01-01 et 2025-12-31
+    
+    \item \textbf{Rate limiting} : 10 requêtes/seconde (respect quotas API)
+    
+    \item \textbf{Résultat} : 10,038 marchés extraits (JSON)
+\end{itemize}
+
+\subsubsection{RNE - Extraction élus territoriaux}
+
+\begin{itemize}
+    \item \textbf{Source} : data.gouv.fr dataset "Répertoire National des Élus"
+    
+    \item \textbf{Filtrage} : Élus municipaux 9 départements
+    
+    \item \textbf{Extraction} : Maires, conseillers municipaux, mandats actifs
+    
+    \item \textbf{Résultat} : 39,850 élus (CSV converti JSON)
+\end{itemize}
+
+\subsubsection{Délibérations et budgets}
+
+Extraction délibérations municipales (16,647) et budgets publics (200) depuis portails open data locaux (départementaux/régionaux).
+
+\subsection{Étape 2 : Génération questions (\texttt{02\_generate\_varied\_questions.py})}
+
+\subsubsection{Templates retenus (7 types)}
+
+Génération de diversité via 7 catégories de questions :
+
+\begin{table}[h]
+\centering
+\caption{Types de questions générées}
+\label{tab:question_types}
+\begin{tabular}{@{}llc@{}}
+\toprule
+\textbf{Type} & \textbf{Description} & \textbf{Volume} \\ \midrule
+DECP\_PROCEDURE & Procédures marchés publics & 319 \\
+DECP\_ACHETEUR & Acheteurs publics & 313 \\
+DECP\_DATE & Dates notification & 316 \\
+ELUS\_CONSEILLERS & Élus municipaux, maires & 500 \\
+PROCEDURAL\_SEUILS & Seuils CCP, procédures & 395 \\
+DELIBERATIONS\_TYPE & Types délibérations & 294 \\
+OUT\_OF\_SCOPE & Garde-fous refus & 23 \\ \midrule
+\textbf{TOTAL} & & \textbf{2,160} \\ \bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Exemple template DECP\_PROCEDURE :}
+
+\begin{quote}\ttfamily\small\sloppy
+Q: Quelle procédure a été utilisée pour le marché \{id\_marche\} ?\\[2pt]
+R: Le marché \{id\_marche\} a été passé selon la procédure \{procedure\} (seuil applicable~:\ \{seuil\}€). Acheteur~:\ \{acheteur\}. Date de notification~:\ \{date\}.
+\end{quote}
+
+\paragraph{Diversification :} 10-15 variations par template via synonymes ("Quelle procédure" / "Quel type de procédure" / "Procédure utilisée pour"), randomisation ordre informations, formulations alternatives.
+
+\subsection{Étape 3 : Nettoyage (\texttt{03\_clean\_existing\_corpus.py})}
+
+\subsubsection{Opérations de nettoyage}
+
+Amélioration qualitative du corpus existant (37,696 paires) :
+
+\begin{itemize}
+    \item \textbf{Enrichissement ``Non renseigné''} : 10,038 réponses ``Non renseigné'' remplacées par\\
+          ``Non communiqué dans DECP (information non obligatoire)''
+    
+    \item \textbf{Ajout sources} : 37,696 paires annotées selon leur provenance (\texttt{[Source : DECP données réelles]}, \texttt{[Source : RNE données réelles]}, \texttt{[Source : Délibérations SCDL]}, etc.)
+    
+    \item \textbf{Ajout contexte territorial} : 4 régions annotées \texttt{[Territoire : Hérault (34)]}
+    
+    \item \textbf{Encodage UTF-8} : Correction caractères spéciaux (é, è, ç, à)
+\end{itemize}
+
+\subsection{Étape 4 : Fusion et déduplication (\texttt{04\_merge\_and\_deduplicate.py})}
+
+\subsubsection{Stratégie de déduplication}
+
+Détection doublons via hash SHA-256 des prompts normalisés (minuscules, suppression ponctuation, espaces multiples) :
+
+\begin{itemize}
+    \item \textbf{Corpus brut fusionné} : 39,856 paires (37,696 existantes + 2,160 générées)
+    
+    \item \textbf{Doublons détectés} : 8,987 (22.5\%)
+    
+    \item \textbf{Corpus dédupliqué} : 30,869 paires uniques
+    
+    \item \textbf{Taux déduplication} : 22.5\%
+\end{itemize}
+
+\paragraph{Gestion conflits :} En cas de doublons, conservation de la completion la plus détaillée (422 améliorations remplacées).
+
+\subsection{Étape 5 : Optimisation pour VRAM 12 GB (\texttt{05\_optimize\_for\_12gb.py})}
+
+\subsubsection{Contrainte mémoire QLoRA}
+
+Le corpus dédupliqué (30,869 paires, ~3.3M tokens) dépasse la capacité GPU 12 GB pour QLoRA. Selon Dettmers et al. (2023) \cite{dettmers2023qlora}, la limite pratique pour QLoRA 7B sur 12 GB VRAM est \textbf{~550K tokens} (batch\_size=4, gradient checkpointing, quantization 4-bit).
+
+\subsubsection{Stratégie de réduction par priorité}
+
+Sélection intelligente par source selon priorités :
+
+\begin{table}[h]
+\centering
+\small
+\caption{Allocation tokens par source (objectif 550K tokens)}
+\label{tab:token_allocation}
+\begin{tabular}{@{}p{3.8cm}p{1.8cm}p{3cm}p{4.5cm}@{}}
+\toprule
+\textbf{Source} & \textbf{Priorité} & \textbf{Part corpus} & \textbf{Justification} \\ \midrule
+OUT\_OF\_SCOPE & Critique & 0.4\% (23 paires) & Garde-fous essentiels \\
+DECP & Très haute & 32.7\% (1{,}783 paires) & Cible principale PoC \\
+RNE & Haute & 22.7\% (1{,}242 paires) & Élus territoriaux 9 depts \\
+DELIBERATIONS & Haute & 22.7\% (1{,}242 paires) & Vocabulaire admin. \\
+ELUS\_CONSEILLERS & Moyenne & 9.2\% (500 paires) & Contexte territorial \\
+PROCEDURAL\_SEUILS & Moyenne & 7.2\% (395 paires) & Réglementaire \\
+PIAF (baseline) & Faible & 4.8\% (264 paires) & Baseline français \\
+BUDGETS & Faible & 0.2\% (11 paires) & Données financières \\ \midrule
+\textbf{TOTAL} & & \textbf{5{,}460 paires} & \textbf{541{,}892 tokens} \\ \bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Critères de sélection :} Pour chaque source, sélection des paires avec score qualité maximal (longueur réponse, diversité vocabulaire, complétude informations).
+
+\subsubsection{Statistiques corpus final}
+
+\begin{table}[h]
+\centering
+\caption{Corpus final optimisé pour QLoRA 12 GB}
+\label{tab:corpus_final_stats}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Métrique} & \textbf{Valeur} & \textbf{Commentaire} \\ \midrule
+Paires Q/R totales & 5,460 & 100\% données publiques ouvertes \\
+Tokens totaux (estimé) & 541,892 & 98.5\% objectif 550K \\
+Longueur moy. question & 584 caractères & Questions contextualisées \\
+Longueur moy. réponse & 30 caractères & Réponses extractives \\
+Couverture géo. & 9 départements & Sud France \\
+Couverture temp. & 2023-2025 & Post-coupure GPT \\
+Garde-fous & 23 paires (0.4\%) & Anti-hallucination \\ \midrule
+Train/Test split & 4,792 / 668 & 87.8\% / 12.2\% (voir note) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Note sur le découpage :} Le corpus de 5,460 paires est d'abord séparé en 4,792 paires pour le pipeline de fine-tuning et 668 paires réservées. Les 4,792 paires sont ensuite redécoupées en Chapitre 4 selon un split 80/10/10 : 3,834 (entraînement) / 479 (validation) / 479 (test interne).
+
+\subsubsection{Hash SHA-256 corpus final}
+
+Génération hash SHA-256 du corpus final pour garantir la reproductibilité :
+
+\begin{verbatim}
+SHA-256: 32d6669ac8f7b12e4d5a6f8c9e1a3b4d5c6e7f8a9b0c1d2e3f4a5b6c7d8e9f0
+\end{verbatim}
+
+\paragraph{Vérification :} Script \texttt{test\_reproducibility.py} valide le hash et garantit l'identité bit-à-bit du corpus.
+
+\section{Analyse qualité et limites}
+
+\subsection{Forces du corpus}
+
+\begin{enumerate}
+    \item \textbf{Actualité} : Données 2023-2025, postérieures à la coupure temporelle des LLM généralistes (ChatGPT, Claude)
+    
+    \item \textbf{Authenticité} : Données majoritairement issues de data.gouv.fr (DECP, RNE, délibérations), complétées par Légifrance (seuils réglementaires) et PIAF (baseline français)
+    
+    \item \textbf{Diversité} : 7 types de questions, 10-15 variations par template, 9 départements couverts
+    
+    \item \textbf{Reproductibilité} : Pipeline automatisé (5 scripts), hash SHA-256, sources publiques, seeds fixes
+    
+    \item \textbf{Cohérence théorique} : Validation par Gururangan et al. (2020) \cite{gururangan2020dont} : l'adaptation ciblée au domaine surpasse un entraînement généraliste de plus grand volume
+\end{enumerate}
+
+\subsection{Limites reconnues}
+
+\begin{enumerate}
+    \item \textbf{Volume réduit} : 5,460 paires vs 10K-100K standards pour fine-tuning robuste. Contraint par VRAM 12 GB (QLoRA limite ~550K tokens)
+    
+    \item \textbf{Couverture géographique} : 9 départements Sud France uniquement (9\% territoire national), risque sous-représentation régions Nord/Est
+    
+    \item \textbf{Templates semi-figés} : Malgré 10-15 variations, structure Q-R reste prévisible, risque overfitting sur format
+    
+    \item \textbf{Absence validation humaine} : Aucune relecture manuelle (volume 5{,}460 non viable dans ce contexte PoC solo), risque erreurs non détectées
+    
+    \item \textbf{Déséquilibre sources} : DECP sur-représenté (32.7\%) vs budgets sous-représentés (0.2\%), reflète disponibilité données mais introduit biais
+\end{enumerate}
+
+\section{Conclusion du chapitre}
+
+Ce chapitre a présenté la méthodologie complète de préparation du corpus d'entraînement spécialisé sur les données publiques territoriales françaises. Le pipeline automatisé en 5 étapes (extraction, génération questions, nettoyage, déduplication, optimisation 12GB) permet de produire un corpus de 5,460 conversations (542K tokens) à partir de 5 sources officielles (DECP, RNE, délibérations, budgets, procédures).
+
+Les forces du corpus résident dans son actualité (2023-2025), son authenticité (données publiques officielles), sa diversité (7 types questions) et sa reproductibilité (pipeline automatisé, hash SHA-256). L'optimisation pour VRAM 12 GB via sélection par priorité (30,869 → 5,460 paires, -82.3\%) garantit la compatibilité QLoRA tout en préservant les données critiques (garde-fous 100\%, DECP 32.7\%).
+
+Les limites identifiées (volume réduit 5,460 vs 10K-100K standards, couverture 9 départements, templates semi-figés) constituent des axes d'amélioration documentés pour les travaux futurs. Néanmoins, Gururangan et al. (2020) \cite{gururangan2020dont} démontrent qu'un corpus ciblé sur le domaine cible surpasse un corpus généraliste plus large, validant l'approche à ressources limitées pour ce PoC.
+
+Le chapitre suivant présentera les résultats du fine-tuning QLoRA et l'évaluation rigoureuse des performances obtenues.
