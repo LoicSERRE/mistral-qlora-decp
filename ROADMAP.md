@@ -55,13 +55,13 @@
 
 ## Jalons
 
-| Date     | Jalon                            |
-| -------- | -------------------------------- |
-| oct.     | Sujet validé                    |
-| nov.     | Modèle choisi (Mistral 7B v0.3) |
-| déc.    | Dataset prêt (5 460 paires)     |
-| jan.     | Modèle entraîné               |
-| Mi-jan.  | Résultats analysés             |
-| Fev.  | Rédaction mémoire              |
+| Date        | Jalon                                    |
+| ----------- | ---------------------------------------- |
+| oct.        | Sujet validé                            |
+| nov.        | Modèle choisi (Mistral 7B v0.3)         |
+| déc.       | Dataset prêt (5 460 paires)             |
+| jan.        | Modèle entraîné                       |
+| Mi-jan.     | Résultats analysés                     |
+| Fev.        | Rédaction mémoire                      |
 | Début-Mars | Finalisation mémoire + création poster |
-| Mi-mars | Rendu du mémoire + Soutenance |
+| Mi-mars     | Rendu du mémoire + Soutenance           |
