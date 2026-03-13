@@ -36,6 +36,7 @@ data/processed/
 data/fine_tuning/training_data_enriched_varied.jsonl
 data/fine_tuning/training_data_cleaned.jsonl
 data/fine_tuning/training_data_merged.jsonl
+data/fine_tuning/training_data_final_metadata.json
 
 # NOTE : data/fine_tuning/training_data_final_12gb.jsonl est TRACKE
 #        Corpus canonique (4 792 paires) utilise pour les adapters.
