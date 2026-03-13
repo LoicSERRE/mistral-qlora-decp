@@ -3,7 +3,7 @@
 Projet de mémoire de fin d'études (CESI, 2025-2026). L'objectif est de fine-tuner Mistral 7B v0.3 avec QLoRA sur un corpus de données publiques territoriales françaises, en utilisant uniquement du matériel grand public (RTX 4070 Ti, 12 GB VRAM, budget 0 €).
 
 Mémoire complet : [`memoire/memoire_ADS.tex`](memoire/memoire_ADS.tex)
-Code source : **https://github.com/LoicSERRE/ADS**
+Code source : **https://github.com/LoicSERRE/mistral-qlora-decp**
 
 ## Résultats obtenus
 
@@ -29,8 +29,8 @@ Code source : **https://github.com/LoicSERRE/ADS**
 ## Installation
 
 ```powershell
-git clone https://github.com/LoicSERRE/ADS.git
-cd ADS
+git clone https://github.com/LoicSERRE/mistral-qlora-decp.git
+cd mistral-qlora-decp
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
