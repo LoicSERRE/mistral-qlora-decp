@@ -3,13 +3,13 @@
 % Packages essentiels
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage[authoryear,round]{natbib}
 \usepackage[french]{babel}
 \usepackage{geometry}
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{hyperref}
-\usepackage{cite}
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
@@ -25,6 +25,10 @@
 \usepackage{amsfonts}
 \usepackage{setspace}
 \usepackage{mathptmx}  % Police Times New Roman
+
+% Numérotation des figures et tableaux par chapitre (ex. Figure 2.1, Tableau 3.2)
+\numberwithin{figure}{chapter}
+\numberwithin{table}{chapter}
 
 % Configuration de la géométrie (Guide ADS : 2.5 cm tous côtés)
 \geometry{
@@ -43,9 +47,9 @@
 % Configuration des en-têtes et pieds de page
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[LE,RO]{\thepage}
 \fancyhead[RE]{\nouppercase{\leftmark}}
 \fancyhead[LO]{\nouppercase{\rightmark}}
+\fancyfoot[C]{\thepage}
 
 % Configuration des liens hypertextes
 \hypersetup{
@@ -128,7 +132,7 @@
 
 \begin{document}
 
-% Page de garde
+% Page de garde (non numérotée)
 \begin{titlepage}
     \centering
     
@@ -188,21 +192,12 @@
     {\small Année universitaire 2025--2026}
 \end{titlepage}
 
-% Table des matières
-\tableofcontents
-\newpage
+% ============================================================================
+% PAGES LIMINAIRES - numérotation en chiffres romains
+% ============================================================================
+\pagenumbering{roman}
 
-% Liste des tableaux
-\listoftables
-\addcontentsline{toc}{chapter}{Liste des tableaux}
-\newpage
-
-% Liste des figures
-\listoffigures
-\addcontentsline{toc}{chapter}{Liste des figures}
-\newpage
-
-% Résumé
+% Résumé (avant la table des matières, conformément au guide ADS)
 \chapter*{Résumé}
 \addcontentsline{toc}{chapter}{Résumé}
 
@@ -234,6 +229,20 @@ Results show 83.3\% factual accuracy on territorial questions (vs.\ 0\% for the 
 \medskip
 \noindent\textbf{Source code:} \url{https://github.com/LoicSERRE/mistral-qlora-decp}
 
+% Table des matières
+\tableofcontents
+\newpage
+
+% Liste des figures et tableaux
+\listoftables
+\addcontentsline{toc}{chapter}{Liste des tableaux}
+\newpage
+
+\listoffigures
+\addcontentsline{toc}{chapter}{Liste des figures}
+\newpage
+
+% Remerciements
 \chapter*{Remerciements}
 \addcontentsline{toc}{chapter}{Remerciements}
 
@@ -243,6 +252,7 @@ Nous remercions également l'\textbf{équipe pédagogique du CESI École d'Ingé
 
 Ce projet a été mené de façon entièrement autonome, en exploitant uniquement des données publiques librement accessibles sur \textbf{data.gouv.fr} (DECP, RNE, délibérations). Nous remercions à ce titre l'ensemble des acteurs publics qui rendent ces données disponibles sous licence ouverte, ainsi que la communauté open-source (HuggingFace, Mistral AI, PEFT) dont les outils et contributions ont rendu ce travail techniquement réalisable.
 
+% Liste des abréviations et acronymes
 \chapter*{Liste des acronymes}
 \addcontentsline{toc}{chapter}{Liste des acronymes}
 
@@ -276,8 +286,9 @@ Ce projet a été mené de façon entièrement autonome, en exploitant uniquemen
 \end{description}
 
 % ============================================================================
-% CHAPITRES DU MÉMOIRE (fichiers séparés)
+% CHAPITRES DU MÉMOIRE - numérotation en chiffres arabes
 % ============================================================================
+\pagenumbering{arabic}
 
 \input{chapitre1_introduction}
 \input{chapitre2_selection_modele}
@@ -289,7 +300,7 @@ Ce projet a été mené de façon entièrement autonome, en exploitant uniquemen
 % RÉFÉRENCES BIBLIOGRAPHIQUES
 % ============================================================================
 
-\bibliographystyle{plain}
+\bibliographystyle{apalike}
 \bibliography{references}
 
 % ============================================================================
@@ -297,9 +308,9 @@ Ce projet a été mené de façon entièrement autonome, en exploitant uniquemen
 % ============================================================================
 
 \appendix
-\chapter{Annexes techniques}
+\renewcommand{\chaptername}{Annexe}
 
-\section{Pipeline de préparation des données}
+\chapter{Pipeline de préparation des données}
 
 Le pipeline de préparation du corpus est constitué de cinq scripts Python exécutés séquentiellement~:
 
@@ -313,7 +324,7 @@ Le pipeline de préparation du corpus est constitué de cinq scripts Python exé
 
 Le code source complet est disponible dans le dépôt GitHub du projet.
 
-\section{Configuration complète QLoRA}
+\chapter{Configuration complète QLoRA}
 
 Paramètres détaillés de la configuration d'entraînement~:
 
@@ -342,7 +353,7 @@ Seed & 42 \\
 \end{tabular}
 \end{table}
 
-\section{Exemples de paires question-réponse}
+\chapter{Exemples de paires question-réponse}
 
 Extraits représentatifs du corpus d'entraînement~:
 

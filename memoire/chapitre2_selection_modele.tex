@@ -14,13 +14,13 @@ La sélection du modèle de langage de base doit concilier trois impératifs pot
     \item \textbf{Reproductibilité} pour garantir la validité du mémoire
 \end{enumerate}
 
-La sélection s'appuie sur l'AHP (\textit{Analytic Hierarchy Process}) de Saaty (1980) \cite{saaty1980ahp}, méthode structurée d'aide à la décision multicritère permettant de combiner des critères hétérogènes (performance, faisabilité, coût) de façon transparente et reproductible.
+La sélection s'appuie sur l'AHP (\textit{Analytic Hierarchy Process}) de \citet{saaty1980ahp}, méthode structurée d'aide à la décision multicritère permettant de combiner des critères hétérogènes (performance, faisabilité, coût) de façon transparente et reproductible.
 
 \section{Contraintes et exigences}
 
 \subsection{Infrastructure technique disponible}
 
-Le projet s'appuie sur un GPU NVIDIA RTX 4070 Ti (12~GB VRAM), 64~GB RAM DDR5 et un budget logiciel de 0\,\texteuro{} (la configuration logicielle complète est détaillée au Chapitre 4). Selon Dettmers et al. (2023)~\cite{dettmers2023qlora}, 12~GB VRAM permettent le fine-tuning de modèles de 7 à 13 milliards de paramètres via des techniques d'optimisation mémoire comme LoRA (\textit{Low-Rank Adaptation}).
+Le projet s'appuie sur un GPU NVIDIA RTX 4070 Ti (12~GB VRAM), 64~GB RAM DDR5 et un budget logiciel de 0\,\texteuro{} (la configuration logicielle complète est détaillée au Chapitre 4). Selon \citet{dettmers2023qlora}, 12~GB VRAM permettent le fine-tuning de modèles de 7 à 13 milliards de paramètres via des techniques d'optimisation mémoire comme LoRA (\textit{Low-Rank Adaptation}).
 
 \subsection{Exigences fonctionnelles}
 
@@ -44,11 +44,11 @@ Quatre approches permettent d'adapter un LLM aux données publiques territoriale
 
 \textbf{Prompt engineering (API LLM commercial).} La plus simple à déployer : aucun GPU requis, intégration via API REST. Elle reste cependant superficielle — le modèle ne connaît pas les données DECP locales et ne fait que reformuler ce qui lui est fourni dans le prompt. Le coût récurrent (30--100\,\$/mois) et le transfert de données vers des serveurs hors UE (risque RGPD) la rendent structurellement inadaptée aux petites collectivités.
 
-\textbf{RAG (Retrieval-Augmented Generation).} Le RAG \cite{lewis2020rag} enrichit dynamiquement le contexte du modèle à partir d'une base documentaire vectorisée. Son avantage principal est la mise à jour du corpus sans ré-entraînement. Cependant, le modèle de base reste généraliste et ne maîtrise pas le vocabulaire administratif spécialisé. Cette approche est retenue comme \textit{extension future} complémentaire au fine-tuning.
+\textbf{RAG (Retrieval-Augmented Generation).} Le RAG \citep{lewis2020rag} enrichit dynamiquement le contexte du modèle à partir d'une base documentaire vectorisée. Son avantage principal est la mise à jour du corpus sans ré-entraînement. Cependant, le modèle de base reste généraliste et ne maîtrise pas le vocabulaire administratif spécialisé. Cette approche est retenue comme \textit{extension future} complémentaire au fine-tuning.
 
 \textbf{Fine-tuning complet (Full FT).} Réajuster l'intégralité des paramètres de Mistral 7B nécessite environ 56\,GB de VRAM (poids 14\,GB\,×\,4 avec l'optimiseur Adam), soit près de cinq fois la capacité disponible (12\,GB). Cette approche est techniquement impossible avec l'infrastructure du projet.
 
-\textbf{Fine-tuning efficient (QLoRA/LoRA).} LoRA \cite{hu2021lora} réduit les paramètres entraînés à moins de 1\,\% du total grâce à des matrices de rang faible. QLoRA \cite{dettmers2023qlora} y ajoute la quantization 4-bit, ramenant l'empreinte mémoire à 5--6\,GB. C'est la seule approche compatible avec la contrainte matérielle tout en produisant une spécialisation effective du vocabulaire.
+\textbf{Fine-tuning efficient (QLoRA/LoRA).} LoRA \citep{hu2021lora} réduit les paramètres entraînés à moins de 1\,\% du total grâce à des matrices de rang faible. QLoRA \citep{dettmers2023qlora} y ajoute la quantization 4-bit, ramenant l'empreinte mémoire à 5--6\,GB. C'est la seule approche compatible avec la contrainte matérielle tout en produisant une spécialisation effective du vocabulaire.
 
 \begin{table}[ht]
 \centering
@@ -74,7 +74,7 @@ Reproductibilité & $\times$ & Partielle & $\checkmark$ & $\checkmark$ \\
 
 \subsection{Principe de l'Analytic Hierarchy Process}
 
-L'AHP est une méthode d'aide à la décision multicritère développée par Saaty (1980) \cite{saaty1980ahp}. Elle permet de structurer un problème de décision complexe en hiérarchie de critères, d'attribuer des poids relatifs à chaque critère selon leur importance, et de calculer un score global pour chaque alternative.
+L'AHP est une méthode d'aide à la décision multicritère développée par \citet{saaty1980ahp}. Elle permet de structurer un problème de décision complexe en hiérarchie de critères, d'attribuer des poids relatifs à chaque critère selon leur importance, et de calculer un score global pour chaque alternative.
 
 L'AHP permet : (1) validation mathématique via ratio de cohérence (CR), (2) transparence des critères et pondérations, (3) conciliation de critères contradictoires (performance vs faisabilité).
 
@@ -101,13 +101,13 @@ Cinq critères ont été retenus pour l'évaluation des modèles candidats :
 \begin{tabular}{@{}lp{8cm}c@{}}
 \toprule
 \textbf{Critère} & \textbf{Justification} & \textbf{Poids} \\ \midrule
-Performance en français & 100\% du corpus cible est en français. Joshi et al. (2020) \cite{joshi2020linguistic} documentent la sous-représentation systématique des langues non-anglaises dans les corpus NLP, ce qui se traduit par des performances dégradées hors de l'anglais. & 30\% \\
+Performance en français & 100\% du corpus cible est en français. \citet{joshi2020linguistic} documentent la sous-représentation systématique des langues non-anglaises dans les corpus NLP, ce qui se traduit par des performances dégradées hors de l'anglais. & 30\% \\
 \addlinespace
-Benchmarks généraux & L'étude HELM \cite{liang2022holistic} établit des corrélations entre scores sur benchmarks standardisés et comportements en production, justifiant leur usage comme indicateur de comparaison. & 25\% \\
+Benchmarks généraux & L'étude HELM \citep{liang2022holistic} établit des corrélations entre scores sur benchmarks standardisés et comportements en production, justifiant leur usage comme indicateur de comparaison. & 25\% \\
 \addlinespace
 Faisabilité technique & Contrainte dure (12 GB VRAM). Critère binaire avec impact fatal si non satisfait. & 20\% \\
 \addlinespace
-Reproductibilité & Exigence méthodologique du mémoire ADS : sources vérifiables, méthode documentée \cite{goodman2016reproducibility}. & 15\% \\
+Reproductibilité & Exigence méthodologique du mémoire ADS : sources vérifiables, méthode documentée \citep{goodman2016reproducibility}. & 15\% \\
 \addlinespace
 Communauté & Disponibilité de tutoriels, exemples de fine-tuning et réponses aux problèmes techniques en français, critère particulièrement important pour un projet solo sans support institutionnel. & 10\% \\ \bottomrule
 \end{tabular}
@@ -153,11 +153,11 @@ CR = \frac{CI}{RI} = \frac{0.08}{1.12} = 0.071 \approx 0.08
 La sélection préliminaire des modèles candidats s'appuie sur six critères d'inclusion stricts :
 
 \begin{enumerate}
-    \item \textbf{Taille :} 5 à 13 milliards de paramètres (compatibilité VRAM 12 GB selon Dettmers et al., 2023 \cite{dettmers2023qlora})
+    \item \textbf{Taille :} 5 à 13 milliards de paramètres (compatibilité VRAM 12 GB selon \citealp{dettmers2023qlora})
     
     \item \textbf{Licence :} Open-source permissive (Apache 2.0, MIT ou équivalent) pour usage libre
     
-    \item \textbf{Performance :} MMLU $\geq$ 55\% (seuil compétitif selon Hendrycks et al., 2021 \cite{hendrycks2021mmlu})
+    \item \textbf{Performance :} MMLU $\geq$ 55\% (seuil compétitif selon \citealp{hendrycks2021mmlu})
     
     \item \textbf{Disponibilité :} Poids du modèle accessibles publiquement (HuggingFace, GitHub)
     
@@ -183,9 +183,9 @@ Les critères d'exclusion éliminent :
 Cinq modèles open-source satisfaisant les critères d'inclusion ont été sélectionnés :
 
 \begin{enumerate}
-    \item \textbf{Mistral 7B v0.3} (Mistral AI) - 7.24B paramètres \cite{jiang2023mistral}
+    \item \textbf{Mistral 7B v0.3} (Mistral AI) - 7.24B paramètres \citep{jiang2023mistral}
     
-    \item \textbf{Qwen2.5 7B} (Alibaba Cloud) - 7.07B paramètres \cite{yang2024qwen25}
+    \item \textbf{Qwen2.5 7B} (Alibaba Cloud) - 7.07B paramètres \citep{yang2024qwen25}
     
     \item \textbf{Mistral NeMo 12B} (Mistral AI × NVIDIA) - 12B paramètres
     
@@ -251,14 +251,14 @@ Tous les scores présentés ont fait l'objet d'une vérification croisée via pl
 \begin{itemize}
     \item MMLU 62.5\% : Open LLM Leaderboard
     
-    \item HellaSwag 83.31\% : Jiang et al. (2023) \cite{jiang2023mistral}
+    \item HellaSwag 83.31\% : \citet{jiang2023mistral}
     
     \item Position \#1 des modèles 7B non-fine-tunés
 \end{itemize}
 
 \paragraph{Qwen2.5 7B :}
 \begin{itemize}
-    \item MMLU 70.3\% : Yang et al. (2024) \cite{yang2024qwen25}
+    \item MMLU 70.3\% : \citet{yang2024qwen25}
     
     \item MMLU-FR 66.8\% : Tests communautaires HuggingFace
     
@@ -300,7 +300,7 @@ L'analyse multicritère AHP place Qwen2.5 en tête (9.65/10) devant Mistral 7B (
 Qwen2.5 surpasse Mistral 7B sur deux critères majeurs :
 
 \begin{enumerate}
-    \item \textbf{Performance française (+0.3 point)} : 66.8\% MMLU-FR contre $\sim$60\% pour Mistral, soit +6.8\% de performance absolue \cite{yang2024qwen25}
+    \item \textbf{Performance française (+0.3 point)} : 66.8\% MMLU-FR contre $\sim$60\% pour Mistral, soit +6.8\% de performance absolue \citep{yang2024qwen25}
     
     \item \textbf{Benchmarks généraux (+0.5 point)} : 70.3\% MMLU contre 62.5\%, positionnant Qwen2.5 comme le meilleur modèle 7B sur ce benchmark
 \end{enumerate}

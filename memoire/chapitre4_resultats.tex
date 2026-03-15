@@ -54,7 +54,7 @@ Le fine-tuning a été effectué avec la technique QLoRA (Quantized LoRA) permet
 \end{table}
 
 \paragraph{Justification des hyperparamètres :}
-La quantization NF4 réduit l'empreinte mémoire de 14 GB (FP16) à 3.5 GB (4-bit), rendant le fine-tuning viable sur 12 GB VRAM avec marge confortable. Le rang LoRA r=32 constitue un compromis entre capacité d'adaptation et prévention de l'overfitting : r=16 limiterait la capacité d'adaptation sur un corpus de 4,792 paires, tandis que r=64 augmenterait significativement l'empreinte VRAM. L'arrêt anticipé (patience=2) remplace les 3 epochs fixes : le modèle s'est arrêté à l'epoch 1.25 après détection de convergence, réduisant le risque d'overfitting et le temps d'entraînement. Le split 80/10/10 (train/val/test) garantit une validation rigoureuse et reproductible (seed=42), avec un learning rate standard de 2e-4 pour LoRA sur modèles 7B (Hu et al., 2021 \cite{hu2021lora}).
+La quantization NF4 réduit l'empreinte mémoire de 14 GB (FP16) à 3.5 GB (4-bit), rendant le fine-tuning viable sur 12 GB VRAM avec marge confortable. Le rang LoRA r=32 constitue un compromis entre capacité d'adaptation et prévention de l'overfitting : r=16 limiterait la capacité d'adaptation sur un corpus de 4,792 paires, tandis que r=64 augmenterait significativement l'empreinte VRAM. L'arrêt anticipé (patience=2) remplace les 3 epochs fixes : le modèle s'est arrêté à l'epoch 1.25 après détection de convergence, réduisant le risque d'overfitting et le temps d'entraînement. Le split 80/10/10 (train/val/test) garantit une validation rigoureuse et reproductible (seed=42), avec un learning rate standard de 2e-4 pour LoRA sur modèles 7B \citep{hu2021lora}.
 
 \subsection{Métriques d'entraînement}
 
@@ -164,7 +164,7 @@ Pic VRAM & -- & 5,33 GB & -- \\
 La perplexité de 1,37 est très faible pour un modèle 7B fine-tuné sur corpus restreint (3,834 paires). Elle dépasse largement l'objectif SMART ($<$ 2.0, soit -87.5\% obtenu vs -80\% visé). La légère hausse par rapport au modèle de base en termes absolus s'explique par la \textit{spécialisation sémantique} : le modèle fine-tuné génère des tokens très spécifiques au domaine DECP/RNE, tandis que le modèle de base reste généraliste.
 
 \paragraph{Signification :}
-Une perplexité de 1.37 signifie qu'en moyenne, le modèle hésite entre 1.37 choix de token suivant lors de la génération sur le domaine spécialisé. Pour comparaison, GPT-3 (175B paramètres) atteint une perplexité autour de 10 sur textes généraux \cite{brown2020gpt3}, tandis que le Mistral 7B base affiche 11.01 sur notre corpus DECP. La réduction de -87.5\% valide objectivement l'efficacité du fine-tuning sur domaine ciblé.
+Une perplexité de 1.37 signifie qu'en moyenne, le modèle hésite entre 1.37 choix de token suivant lors de la génération sur le domaine spécialisé. Pour comparaison, GPT-3 (175B paramètres) atteint une perplexité autour de 10 sur textes généraux \citep{brown2020gpt3}, tandis que le Mistral 7B base affiche 11.01 sur notre corpus DECP. La réduction de -87.5\% valide objectivement l'efficacité du fine-tuning sur domaine ciblé.
 
 \paragraph{Validation méthodologique :}
 La perplexité est une métrique \textit{indépendante} du protocole de test (pas de seuil arbitraire). Elle ne peut pas être "trichée" par des questions faciles, ce qui en fait un indicateur fiable de la qualité du fine-tuning.
@@ -366,7 +366,7 @@ Les principales limites identifiées (volume de corpus restreint, couverture gé
 L'absence de validation MMLU/HellaSwag post-fine-tuning constitue une limitation méthodologique majeure de cette étude.
 
 \paragraph{Contexte théorique :}
-Le \textit{catastrophic forgetting} \cite{kirkpatrick2017overcoming} désigne la dégradation des capacités générales d'un modèle lors d'un fine-tuning spécialisé. Les travaux de French \cite{french1999catastrophic} et McCloskey \& Cohen \cite{mccloskey1989catastrophic} documentent des pertes de 10-40\% sur benchmarks généraux après fine-tuning sur corpus étroit.
+Le \textit{catastrophic forgetting} \citep{kirkpatrick2017overcoming} désigne la dégradation des capacités générales d'un modèle lors d'un fine-tuning spécialisé. Les travaux de \citet{french1999catastrophic} et \citet{mccloskey1989catastrophic} documentent des pertes de 10-40\% sur benchmarks généraux après fine-tuning sur corpus étroit.
 
 \paragraph{Facteurs d'atténuation dans notre cas :}
 \begin{itemize}
@@ -411,7 +411,7 @@ La comparaison directe avec les modèles commerciaux (GPT-4, Claude, Gemini) sur
 \paragraph{Comparaison indirecte :}
 \begin{itemize}
     \item \textbf{vs Mistral 7B base} : Amélioration de 87,5\% (PPL 11,01 → 1,37) valide objectivement l'efficacité du fine-tuning
-    \item \textbf{vs littérature GPT-3} : Brown et al. (2020) rapportent PPL \textasciitilde{}10-20 sur textes généraux \cite{brown2020gpt3}. La PPL de 1,37 sur domaine spécialisé suggère une adaptation supérieure, mais les corpus diffèrent (DECP vs web général)
+    \item \textbf{vs littérature GPT-3} : \citet{brown2020gpt3} rapportent PPL \textasciitilde{}10-20 sur textes généraux. La PPL de 1,37 sur domaine spécialisé suggère une adaptation supérieure, mais les corpus diffèrent (DECP vs web général)
     \item \textbf{Performance qualitative estimée} : Des tests informels (non quantifiés) suggèrent que GPT-4 produit des réponses génériques correctes mais non factuelles sur questions DECP spécifiques
 \end{itemize}
 

@@ -4,7 +4,7 @@
 
 \section{Introduction et contraintes}
 
-La qualité du corpus d'entraînement conditionne directement les performances post-fine-tuning. Les travaux de Gururangan et al. (2020) \cite{gururangan2020dont} démontrent qu'un pré-entraînement ciblé sur le domaine cible améliore les performances même à partir d'un volume de données restreint, validant l'approche à ressources limitées pour la spécialisation de domaine.
+La qualité du corpus d'entraînement conditionne directement les performances post-fine-tuning. Les travaux de \citet{gururangan2020dont} démontrent qu'un pré-entraînement ciblé sur le domaine cible améliore les performances même à partir d'un volume de données restreint, validant l'approche à ressources limitées pour la spécialisation de domaine.
 
 Ce chapitre présente la méthodologie de collecte, nettoyage et structuration du corpus d'entraînement spécialisé sur les données publiques territoriales françaises (marchés publics DECP, élus RNE, délibérations municipales, budgets publics).
 
@@ -13,7 +13,7 @@ Ce chapitre présente la méthodologie de collecte, nettoyage et structuration d
 La constitution du corpus est soumise aux contraintes générales du projet (cf. Chapitre 1) ainsi qu'à deux contraintes spécifiques à la préparation des données :
 
 \begin{enumerate}
-    \item \textbf{Contrainte VRAM} : Corpus optimisé pour GPU 12 GB (RTX 4070 Ti), imposant une limite ~550K tokens pour QLoRA selon Dettmers et al. (2023) \cite{dettmers2023qlora}
+    \item \textbf{Contrainte VRAM} : Corpus optimisé pour GPU 12 GB (RTX 4070 Ti), imposant une limite ~550K tokens pour QLoRA selon \citet{dettmers2023qlora}
     
     \item \textbf{Contrainte temporelle} : Priorité donnée aux données post-2023 pour une actualité supérieure aux LLM généralistes
 \end{enumerate}
@@ -94,7 +94,7 @@ Seuils réglementaires et procédures Code Commande Publique (CCP) :
 
 \subsection{Justification de la couverture géographique}
 
-La collecte privilégie la \textit{profondeur sur l'exhaustivité} : focus sur 9 départements Sud France plutôt qu'une couverture nationale superficielle. Cette approche s'appuie sur les travaux de Gururangan et al. (2020) \cite{gururangan2020dont} qui montrent que l'adaptation au domaine cible est plus efficace qu'un corpus généraliste plus large.
+La collecte privilégie la \textit{profondeur sur l'exhaustivité} : focus sur 9 départements Sud France plutôt qu'une couverture nationale superficielle. Cette approche s'appuie sur les travaux de \citet{gururangan2020dont} qui montrent que l'adaptation au domaine cible est plus efficace qu'un corpus généraliste plus large.
 
 \begin{table}[h]
 \centering
@@ -242,7 +242,7 @@ Détection doublons via hash SHA-256 des prompts normalisés (minuscules, suppre
 
 \subsubsection{Contrainte mémoire QLoRA}
 
-Le corpus dédupliqué (30,869 paires, ~3.3M tokens) dépasse la capacité GPU 12 GB pour QLoRA. Selon Dettmers et al. (2023) \cite{dettmers2023qlora}, la limite pratique pour QLoRA 7B sur 12 GB VRAM est \textbf{~550K tokens} (batch\_size=4, gradient checkpointing, quantization 4-bit).
+Le corpus dédupliqué (30,869 paires, ~3.3M tokens) dépasse la capacité GPU 12 GB pour QLoRA. Selon \citet{dettmers2023qlora}, la limite pratique pour QLoRA 7B sur 12 GB VRAM est \textbf{~550K tokens} (batch\_size=4, gradient checkpointing, quantization 4-bit).
 
 \subsubsection{Stratégie de réduction par priorité}
 
@@ -316,7 +316,7 @@ SHA-256: 32d6669ac8f7b12e4d5a6f8c9e1a3b4d5c6e7f8a9b0c1d2e3f4a5b6c7d8e9f0
     
     \item \textbf{Reproductibilité} : Pipeline automatisé (5 scripts), hash SHA-256, sources publiques, seeds fixes
     
-    \item \textbf{Cohérence théorique} : Validation par Gururangan et al. (2020) \cite{gururangan2020dont} : l'adaptation ciblée au domaine surpasse un entraînement généraliste de plus grand volume
+    \item \textbf{Cohérence théorique} : Validation par \citet{gururangan2020dont} : l'adaptation ciblée au domaine surpasse un entraînement généraliste de plus grand volume
 \end{enumerate}
 
 \subsection{Limites reconnues}
@@ -339,6 +339,6 @@ Ce chapitre a présenté la méthodologie complète de préparation du corpus d'
 
 Les forces du corpus résident dans son actualité (2023-2025), son authenticité (données publiques officielles), sa diversité (7 types questions) et sa reproductibilité (pipeline automatisé, hash SHA-256). L'optimisation pour VRAM 12 GB via sélection par priorité (30,869 → 5,460 paires, -82.3\%) garantit la compatibilité QLoRA tout en préservant les données critiques (garde-fous 100\%, DECP 32.7\%).
 
-Les limites identifiées (volume réduit 5,460 vs 10K-100K standards, couverture 9 départements, templates semi-figés) constituent des axes d'amélioration documentés pour les travaux futurs. Néanmoins, Gururangan et al. (2020) \cite{gururangan2020dont} démontrent qu'un corpus ciblé sur le domaine cible surpasse un corpus généraliste plus large, validant l'approche à ressources limitées pour ce PoC.
+Les limites identifiées (volume réduit 5,460 vs 10K-100K standards, couverture 9 départements, templates semi-figés) constituent des axes d'amélioration documentés pour les travaux futurs. Néanmoins, \citet{gururangan2020dont} démontrent qu'un corpus ciblé sur le domaine cible surpasse un corpus généraliste plus large, validant l'approche à ressources limitées pour ce PoC.
 
 Le chapitre suivant présentera les résultats du fine-tuning QLoRA et l'évaluation rigoureuse des performances obtenues.
