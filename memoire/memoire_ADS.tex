@@ -128,6 +128,9 @@
 
 \begin{document}
 
+% Pages préliminaires en chiffres romains
+\pagenumbering{roman}
+
 % Page de garde
 \begin{titlepage}
     \centering
@@ -192,14 +195,14 @@
 \tableofcontents
 \newpage
 
-% Liste des tableaux
-\listoftables
-\addcontentsline{toc}{chapter}{Liste des tableaux}
-\newpage
-
 % Liste des figures
 \listoffigures
 \addcontentsline{toc}{chapter}{Liste des figures}
+\newpage
+
+% Liste des tableaux
+\listoftables
+\addcontentsline{toc}{chapter}{Liste des tableaux}
 \newpage
 
 % Résumé
@@ -279,6 +282,10 @@ Ce projet a été mené de façon entièrement autonome, en exploitant uniquemen
 % CHAPITRES DU MÉMOIRE (fichiers séparés)
 % ============================================================================
 
+% Passage en chiffres arabes à partir du chapitre 1
+\cleardoublepage
+\pagenumbering{arabic}
+
 \input{chapitre1_introduction}
 \input{chapitre2_selection_modele}
 \input{chapitre3_corpus}
@@ -291,6 +298,7 @@ Ce projet a été mené de façon entièrement autonome, en exploitant uniquemen
 
 \bibliographystyle{plain}
 \bibliography{references}
+\addcontentsline{toc}{chapter}{Bibliographie}
 
 % ============================================================================
 % ANNEXES
