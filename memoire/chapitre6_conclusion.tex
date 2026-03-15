@@ -14,7 +14,7 @@ L'application de l'Analytic Hierarchy Process (AHP) à la sélection de modèles
 
 \subsubsection{Validation de QLoRA comme nécessité technique}
 
-Contrairement à l'hypothèse initiale (LoRA FP16 viable avec 12 GB VRAM), l'expérimentation terrain a révélé que QLoRA (quantization 4-bit NF4) n'est pas une optimisation mais une \textbf{nécessité technique absolue} : l'empreinte mémoire réelle de LoRA FP16 (14 GB : modèle 13.5 GB + gradients 1.5 GB + activations 1-2 GB) dépasse systématiquement la capacité RTX 4070 Ti (12 GB). Cette observation corrige les estimations théoriques de la littérature \cite{dettmers2023qlora} qui sous-évaluent l'empreinte réelle de 40\%. QLoRA réduit la consommation à 5.33 GB (marge 56\%) tout en conservant 95\% des performances, confirmant son statut de solution incontournable pour le fine-tuning de modèles 7B sur GPU grand public.
+Contrairement à l'hypothèse initiale (LoRA FP16 viable avec 12 GB VRAM), l'expérimentation terrain a révélé que QLoRA (quantization 4-bit NF4) n'est pas une optimisation mais une \textbf{nécessité technique absolue} : l'empreinte mémoire réelle de LoRA FP16 (14 GB : modèle 13.5 GB + gradients 1.5 GB + activations 1-2 GB) dépasse systématiquement la capacité RTX 4070 Ti (12 GB). Cette observation corrige les estimations théoriques de la littérature \citep{dettmers2023qlora} qui sous-évaluent l'empreinte réelle de 40\%. QLoRA réduit la consommation à 5.33 GB (marge 56\%) tout en conservant 95\% des performances, confirmant son statut de solution incontournable pour le fine-tuning de modèles 7B sur GPU grand public.
 
 \subsubsection{Constitution d'un corpus authentique de données publiques}
 
@@ -72,7 +72,7 @@ Absence overfitting & Valid. anti-overfitting & $\approx$PPL$_{\text{t}}$ & \tex
 \subsection{Objectifs non mesurés (limites assumées)}
 
 \paragraph{Catastrophic forgetting (MMLU-FR, F1-Score Q\&A) :}
-Comme explicité au Chapitre 4 (Section \textit{Catastrophic Forgetting : Limite Critique Non Résolue}), la mesure de la préservation des capacités générales n'a pas été effectuée dans ce PoC. La littérature \cite{kirkpatrick2017overcoming, french1999catastrophic} indique un risque théorique de dégradation de 5-15\% sur benchmarks généraux (MMLU, HellaSwag) après fine-tuning sur corpus restreint. L'absence de validation MMLU/F1 post-fine-tuning constitue une \textbf{limite méthodologique critique} : nous ne pouvons exclure une dégradation silencieuse des capacités générales, bien que le modèle conserve des comportements linguistiques cohérents (grammaire, structure logique, refus approprié hors-domaine).
+Comme explicité au Chapitre 4 (Section \textit{Catastrophic Forgetting : Limite Critique Non Résolue}), la mesure de la préservation des capacités générales n'a pas été effectuée dans ce PoC. La littérature \citep{kirkpatrick2017overcoming, french1999catastrophic} indique un risque théorique de dégradation de 5-15\% sur benchmarks généraux (MMLU, HellaSwag) après fine-tuning sur corpus restreint. L'absence de validation MMLU/F1 post-fine-tuning constitue une \textbf{limite méthodologique critique} : nous ne pouvons exclure une dégradation silencieuse des capacités générales, bien que le modèle conserve des comportements linguistiques cohérents (grammaire, structure logique, refus approprié hors-domaine).
 
 \paragraph{Justification de la priorisation :}
 Dans un contexte de PoC contraint (solo, budget 0€), la priorisation des métriques de spécialisation (PPL, précision vocabulaire) sur les métriques de généralisation (MMLU-FR, F1-Score) reflète l'objectif central du projet : \textit{démontrer qu'un modèle 7B fine-tuné peut surpasser les LLM généralistes sur un domaine ciblé}. Cette validation est acquise (PPL 1.37, amélioration 87.5\%). La mesure du catastrophic forgetting, bien qu'importante pour un déploiement production, sort du scope minimal de ce mémoire.
@@ -87,7 +87,7 @@ Le corpus couvre uniquement 9 départements du Sud de la France (11, 13, 30, 31,
 
 \subsubsection{Volume du corpus}
 
-Le corpus de 542K tokens représente moins de 0.00001\% du corpus Mistral 7B base (estimé à 7T tokens \cite{jiang2023mistral}). Cette taille restreinte limite la robustesse aux variations formulations : des tournures de phrases atypiques ou des néologismes administratifs récents (hors période de collecte 2023-2025) peuvent déclencher des comportements imprévisibles. La littérature recommande généralement 1-10M tokens pour un fine-tuning robuste, soit 2-20× notre corpus actuel.
+Le corpus de 542K tokens représente moins de 0.00001\% du corpus Mistral 7B base (estimé à 7T tokens \citep{jiang2023mistral}). Cette taille restreinte limite la robustesse aux variations formulations : des tournures de phrases atypiques ou des néologismes administratifs récents (hors période de collecte 2023-2025) peuvent déclencher des comportements imprévisibles. La littérature recommande généralement 1-10M tokens pour un fine-tuning robuste, soit 2-20× notre corpus actuel.
 
 \subsubsection{Absence de validation humaine}
 
@@ -151,7 +151,7 @@ Un modèle local open-source (Mistral 7B + QLoRA) élimine ces trois risques : c
 Contrairement aux modèles commerciaux (GPT-4 boîte noire), le modèle open-source permet l'audit complet :
 \begin{itemize}
     \item \textbf{Corpus d'entraînement} : Sources data.gouv.fr vérifiables, hash SHA-256 reproductible
-    \item \textbf{Architecture} : Mistral 7B documenté \cite{jiang2023mistral}, poids publics HuggingFace
+    \item \textbf{Architecture} : Mistral 7B documenté \citep{jiang2023mistral}, poids publics HuggingFace
     \item \textbf{Hyperparamètres} : QLoRA r=32, alpha=64, learning\_rate=2e-4 (Tableau \ref{tab:hyperparams_qlora})
     \item \textbf{Résultats bruts} : Logs d'entraînement, métriques horodatées, checkpoints sauvegardés
 \end{itemize}

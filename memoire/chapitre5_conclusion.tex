@@ -19,7 +19,7 @@ Sur le plan citoyen, ce résultat démontre qu'il est désormais possible, avec 
 Ce mémoire apporte trois résultats principaux~:
 
 \begin{enumerate}
-    \item \textit{La spécialisation fonctionne malgré des ressources limitées.} Un corpus de 5\,460 paires question-réponse (542K tokens), issu de cinq sources publiques officielles, suffit à faire passer la perplexité du modèle de 11,01 à 1,37 ($-87{,}5\,\%$). Cette amélioration dépasse les objectifs fixés et confirme les travaux de Gururangan et al.~\cite{gururangan2020dont}~: un corpus ciblé surpasse un corpus généraliste plus large.
+    \item \textit{La spécialisation fonctionne malgré des ressources limitées.} Un corpus de 5\,460 paires question-réponse (542K tokens), issu de cinq sources publiques officielles, suffit à faire passer la perplexité du modèle de 11,01 à 1,37 ($-87{,}5\,\%$). Cette amélioration dépasse les objectifs fixés et confirme les travaux de \citet{gururangan2020dont}~: un corpus ciblé surpasse un corpus généraliste plus large.
     
     \item \textit{Le fine-tuning est accessible.} Avec 0\,\texteuro{} de budget logiciel, du matériel grand public et un pipeline entièrement reproductible (5 scripts, hash SHA-256, seeds fixes), cette approche est à la portée de toute collectivité ou association disposant d'un PC équipé d'une carte graphique de 12~GB.
     
@@ -46,7 +46,7 @@ Ce travail est une preuve de concept, pas une solution de production. Les limite
 
 \begin{itemize}
     \item Le corpus couvre 9 départements du Sud de la France (9\,\% du territoire). Le modèle risque de produire des hallucinations pour les départements non couverts.
-    \item L'absence de validation MMLU-FR post-fine-tuning ne permet pas de quantifier la dégradation éventuelle des capacités générales du modèle (\textit{catastrophic forgetting})~\cite{kirkpatrick2017overcoming}.
+    \item L'absence de validation MMLU-FR post-fine-tuning ne permet pas de quantifier la dégradation éventuelle des capacités générales du modèle (\textit{catastrophic forgetting})~\citep{kirkpatrick2017overcoming}.
     \item Aucune évaluation humaine n'a été conduite. La qualité perçue par un citoyen ou un agent public reste à mesurer.
     \item L'inférence locale requiert encore une compétence technique (CUDA, Python, gestion des dépendances) incompatible avec un déploiement en l'état pour le grand public.
 \end{itemize}

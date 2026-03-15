@@ -16,6 +16,17 @@ env/
 *.log
 training_output.log
 
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.toc
+*.lof
+*.lot
+*.out
+*.fls
+*.fdb_latexmk
+
 # Environment
 .env
 
